@@ -1,3 +1,3 @@
 # Anything
 
-a app to handle anything for me
+An app that handles everything for me
