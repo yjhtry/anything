@@ -55,7 +55,7 @@ invoke('queryPackages', {
 I would use `sqlite` to store the data.
 
 ```sql
-# packages table
+-- packages table
 CREATE TABLE packages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(64) NOT NULL,
@@ -63,32 +63,53 @@ CREATE TABLE packages (
   link TEXT NOT NULL,
   reason TEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-# package name unique index
+CREATE TRIGGER update_packages_updated_at
+AFTER UPDATE ON packages
+FOR EACH ROW
+BEGIN
+  UPDATE packages SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+-- package name unique index
 CREATE UNIQUE INDEX package_name_uindex ON packages (name);
 
-# package_categories table
+-- package_categories table
 CREATE TABLE package_categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(64) NOT NULL,
   parent_id INTEGER DEFAULT 0 REFERENCES package_categories(id) ON DELETE CASCADE,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-# package_category_name and parent_id unique index
+CREATE TRIGGER update_package_categories_updated_at
+AFTER UPDATE ON package_categories
+FOR EACH ROW
+BEGIN
+  UPDATE package_categories SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+-- package_category_name and parent_id unique index
 CREATE UNIQUE INDEX package_category_name_parent_id_uindex ON package_categories (name, parent_id);
 
-# package_category_relations table
+-- package_category_relations table
 CREATE TABLE package_category_relations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   package_id INTEGER NOT NULL REFERENCES packages(id) ON DELETE CASCADE,
   category_id INTEGER NOT NULL REFERENCES package_categories(id) ON DELETE CASCADE,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TRIGGER update_package_category_relations_updated_at
+AFTER UPDATE ON package_category_relations
+FOR EACH ROW
+BEGIN
+  UPDATE package_category_relations SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
 
 ```
 
