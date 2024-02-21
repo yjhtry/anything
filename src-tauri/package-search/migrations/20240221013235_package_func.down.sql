@@ -1,0 +1,1 @@
+-- DROP FUNCTION query_packages;
