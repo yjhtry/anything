@@ -1,8 +1,8 @@
 use crate::{abi, PackManager};
 
-use super::Pack;
+use super::Pkg;
 
-impl Pack for PackManager {
+impl Pkg for PackManager {
     async fn add_package(
         &self,
         data: abi::types::PackageAddReq,
@@ -89,10 +89,9 @@ mod test {
 
     #[tokio::test]
     async fn test_add_package() {
-        let pool = sqlx::sqlite::SqlitePool::connect("sqlite:anything.db")
-            .await
-            .unwrap();
-        let pack = PackManager::new(pool);
+        let pool = get_test_sqlite_pool().await;
+
+        let pk = PackManager::new(pool);
         let data = PackageAddReq {
             name: "test11".to_string(),
             description: "test".to_string(),
@@ -100,8 +99,27 @@ mod test {
             link: "test".to_string(),
             categories: None,
         };
-        let res = pack.add_package(data).await.unwrap();
+        let res = pk.add_package(data).await.unwrap();
 
         assert_eq!(res.id, 1);
     }
+}
+
+#[cfg(test)]
+async fn get_test_sqlite_pool() -> sqlx::sqlite::SqlitePool {
+    use sqlx::{migrate::Migrator, Connection, SqliteConnection};
+    use std::path::Path;
+
+    // @see https://github.com/launchbadge/sqlx/issues/2510
+    // sqlite in memory database does not support shared memory, but named memory connection is useful
+    let mut conn = SqliteConnection::connect("sqlite:file:test?mode=memory&cache=shared")
+        .await
+        .unwrap();
+    let m = Migrator::new(Path::new("./migrations")).await.unwrap();
+
+    m.run(&mut conn).await.unwrap();
+
+    sqlx::sqlite::SqlitePool::connect("sqlite:file:test?mode=memory&cache=shared")
+        .await
+        .unwrap()
 }

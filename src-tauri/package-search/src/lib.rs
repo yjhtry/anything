@@ -1,5 +1,5 @@
 pub mod abi;
-pub mod pack;
+pub mod pkg;
 
 use sqlx::sqlite::SqlitePool;
 

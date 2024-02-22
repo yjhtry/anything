@@ -11,7 +11,7 @@ use crate::abi::{
 };
 
 #[allow(async_fn_in_trait)]
-pub trait Pack {
+pub trait Pkg {
     /// Add a package to the database
     async fn add_package(&self, data: PackageAddReq) -> Result<PackageAddRes, PackError>;
 
