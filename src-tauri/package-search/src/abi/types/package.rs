@@ -7,7 +7,7 @@ pub struct Package {
     pub name: String,
     pub description: String,
     pub link: String,
-    pub categories: Option<Vec<i64>>,
+    pub categories: Vec<i64>,
     pub reason: String,
     pub created_at: String,
     pub updated_at: String,
@@ -36,7 +36,7 @@ pub struct PackageUpdateReq {
     pub name: String,
     pub description: String,
     pub link: String,
-    pub categories: Option<Vec<i64>>,
+    // pub categories: Option<Vec<i64>>,
     pub reason: String,
 }
 
@@ -46,24 +46,13 @@ pub struct PackageUpdateRes {
     pub id: i64,
 }
 
-/// Get package by id response
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PackageGetByIdRes {
-    pub id: i64,
-    pub name: String,
-    pub description: String,
-    pub link: String,
-    pub categories: Option<Vec<i64>>,
-    pub reason: String,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
 /// Query package request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageQueryReq {
     pub name: String,
-    pub categories: Option<Vec<i64>>,
+    pub description: String,
+    #[serde(default)]
+    pub categories: Vec<i64>,
     pub reason: String,
     pub page: i64,
     pub page_size: i64,
@@ -78,13 +67,13 @@ pub struct PackageQueryRes {
 
 /// Update Package Category request
 #[derive(Debug, Serialize, Deserialize)]
-pub struct PackageUpdateCategoryReq {
+pub struct PackageUpdateCategoriesReq {
     pub id: i64,
     pub categories: Vec<i64>,
 }
 
 /// Update Package Category response
 #[derive(Debug, Serialize, Deserialize)]
-pub struct PackageUpdateCategoryRes {
+pub struct PackageUpdateCategoriesRes {
     pub id: i64,
 }

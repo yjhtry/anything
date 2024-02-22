@@ -4,9 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryRelation {
     pub id: i64,
-    pub name: String,
-    pub parent_id: i64,
-    pub category_id: String,
+    pub package_id: i64,
+    pub category_id: i64,
     pub created_at: String,
     pub updated_at: String,
 }

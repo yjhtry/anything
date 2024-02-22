@@ -29,4 +29,14 @@ fn main() {
         .join("UNION ALL");
 
     assert_eq!(query, "('222', 1)");
+
+    let nums = vec![1, 2, 3, 4, 5];
+
+    assert_eq!(
+        nums.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<String>>()
+            .join(", "),
+        "1, 2, 3, 4, 5"
+    );
 }
