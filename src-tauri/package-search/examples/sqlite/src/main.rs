@@ -1,4 +1,3 @@
-use dotenv::dotenv;
 use sqlx::sqlite::SqlitePool;
 use std::env;
 use structopt::StructOpt;
@@ -17,7 +16,7 @@ enum Command {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> anyhow::Result<()> {
-    dotenv().ok();
+    dotenvy::dotenv()?;
 
     let args = Args::from_args_safe()?;
     let pool = SqlitePool::connect(&env::var("DATABASE_URL")?).await?;

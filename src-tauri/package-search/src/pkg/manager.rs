@@ -7,8 +7,9 @@ impl Pkg for PackManager {
         &self,
         data: abi::types::PackageAddReq,
     ) -> Result<abi::types::PackageAddRes, abi::PackError> {
-        // add package to the database
+        let mut tx = self.pool.begin().await?;
 
+        // add package to the database
         let res = sqlx::query!(
             r#"INSERT INTO packages (name, description, reason, link)
           VALUES ($1, $2, $3, $4)
@@ -18,10 +19,43 @@ impl Pkg for PackManager {
             data.reason,
             data.link
         )
-        .fetch_one(&self.pool)
-        .await?;
+        .fetch_one(&mut *tx)
+        .await;
 
-        Ok(abi::types::PackageAddRes { id: res.id })
+        let id = match res {
+            Ok(row) => row.id,
+            Err(e) => {
+                return Err(abi::PackError::DbError(e));
+            }
+        };
+
+        match data.categories {
+            Some(categories) if categories.is_empty() => {
+                let mut query =
+                    "INSERT INTO package_category_relations (package_id, category_id) VALUES "
+                        .to_string();
+                let values = categories
+                    .iter()
+                    .map(|v| format!("({}, {})", id, v))
+                    .collect::<Vec<String>>()
+                    .join(", ");
+
+                query.push_str(values.as_str());
+
+                let res = sqlx::query(query.as_str()).execute(&mut *tx).await;
+
+                if let Err(e) = res {
+                    return Err(abi::PackError::DbError(e));
+                }
+            }
+            Some(_) => {}
+            None => {}
+        }
+
+        // if not commit, the transaction will be rollback when drop
+        tx.commit().await?;
+
+        Ok(abi::types::PackageAddRes { id })
     }
 
     async fn update_package(
@@ -58,9 +92,21 @@ impl Pkg for PackManager {
 
     async fn add_category(
         &self,
-        _data: abi::types::PackageCategoryAddReq,
+        data: abi::types::PackageCategoryAddReq,
     ) -> Result<abi::types::PackageCategoryAddRes, abi::PackError> {
-        todo!()
+        // add category to the database
+
+        let res = sqlx::query!(
+            r#"INSERT INTO package_categories (name, parent_id)
+          VALUES ($1, $2)
+          RETURNING id"#,
+            data.name,
+            data.parent_id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(abi::types::PackageCategoryAddRes { id: res.id })
     }
 
     async fn update_category(
@@ -88,20 +134,58 @@ mod test {
     use crate::abi::types::PackageAddReq;
 
     #[tokio::test]
-    async fn test_add_package() {
+    async fn test_add_category() {
         let pool = get_test_sqlite_pool().await;
 
         let pk = PackManager::new(pool);
+        let data = abi::types::PackageCategoryAddReq {
+            name: "test".to_string(),
+            parent_id: 1,
+        };
+
+        let res = pk.add_category(data).await.unwrap();
+
+        assert_eq!(res.id, 1);
+    }
+
+    #[tokio::test]
+    async fn test_add_package() {
+        let pool = get_test_sqlite_pool().await;
+
+        let pkg = PackManager::new(pool.clone());
+
         let data = PackageAddReq {
             name: "test11".to_string(),
             description: "test".to_string(),
             reason: "test".to_string(),
             link: "test".to_string(),
-            categories: None,
+            categories: Some(vec![1, 2]),
         };
-        let res = pk.add_package(data).await.unwrap();
+
+        add_categories(
+            &pkg,
+            vec![
+                abi::types::PackageCategoryAddReq {
+                    name: "test1".to_string(),
+                    parent_id: 1,
+                },
+                abi::types::PackageCategoryAddReq {
+                    name: "test2".to_string(),
+                    parent_id: 1,
+                },
+            ],
+        )
+        .await;
+
+        let res = pkg.add_package(data).await.unwrap();
 
         assert_eq!(res.id, 1);
+    }
+
+    async fn add_categories(pkg: &PackManager, data: Vec<abi::types::PackageCategoryAddReq>) {
+        for d in data {
+            pkg.add_category(d).await.unwrap();
+        }
     }
 }
 

@@ -14,6 +14,7 @@ pub struct PackageCategory {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryAddReq {
     pub name: String,
+    #[serde(default)]
     pub parent_id: i64,
 }
 
