@@ -1,5 +1,5 @@
 -- packages table
-CREATE TABLE packages (
+CREATE TABLE IF NOT EXISTS packages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(64) NOT NULL,
   description TEXT NOT NULL,

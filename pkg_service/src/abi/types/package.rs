@@ -49,13 +49,26 @@ pub struct PackageUpdateRes {
 /// Query package request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageQueryReq {
+    #[serde(default)]
     pub name: String,
+    #[serde(default)]
     pub description: String,
     #[serde(default)]
     pub categories: Vec<i64>,
+    #[serde(default)]
     pub reason: String,
+    #[serde(default = "default_page")]
     pub page: i64,
+    #[serde(default = "default_page_size")]
     pub page_size: i64,
+}
+
+fn default_page() -> i64 {
+    1
+}
+
+fn default_page_size() -> i64 {
+    10
 }
 
 /// Query package response

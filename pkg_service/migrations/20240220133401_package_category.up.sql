@@ -1,5 +1,5 @@
 -- package_categories table
-CREATE TABLE package_categories (
+CREATE TABLE IF NOT EXISTS  package_categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(64) NOT NULL,
   parent_id INTEGER DEFAULT 0,

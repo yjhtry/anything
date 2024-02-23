@@ -1,5 +1,5 @@
 -- package_category_relations table
-CREATE TABLE package_category_relations (
+CREATE TABLE IF NOT EXISTS package_category_relations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   package_id INTEGER NOT NULL REFERENCES packages(id) ON DELETE CASCADE,
   category_id INTEGER NOT NULL REFERENCES package_categories(id) ON DELETE CASCADE,

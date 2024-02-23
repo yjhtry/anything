@@ -11,9 +11,9 @@ const toast = useToast()
 const name = ref('')
 
 async function onGreeting() {
-  const res = await invoke<string>('hello', { name: name.value })
+  const pkgs = await invoke<any>('query_packages', { data: {} })
 
-  toast.add({ severity: 'success', summary: 'Greeting', detail: res, life: 300000 })
+  toast.add({ severity: 'success', summary: 'Get package count', detail: pkgs?.total })
 }
 </script>
 

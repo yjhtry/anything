@@ -1,10 +1,12 @@
-pub mod abi;
-pub mod pkg;
+mod abi;
+mod pkg;
 
+pub use abi::{types, PkgError};
+pub use pkg::Pkg;
 use sqlx::sqlite::SqlitePool;
 
 pub struct PackManager {
-    pub pool: SqlitePool,
+    pool: SqlitePool,
 }
 
 impl PackManager {

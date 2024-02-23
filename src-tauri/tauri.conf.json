@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "anything",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -38,7 +38,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": {
+        "../pkg_service/migrations": "pkg/migrations"
+      },
       "shortDescription": "",
       "targets": "all",
       "windows": {
