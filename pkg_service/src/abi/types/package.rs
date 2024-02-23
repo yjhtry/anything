@@ -75,7 +75,7 @@ fn default_page_size() -> i64 {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageQueryRes {
     pub total: i64,
-    pub packages: Vec<Package>,
+    pub data: Vec<Package>,
 }
 
 /// Update Package Category request

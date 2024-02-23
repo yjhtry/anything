@@ -220,10 +220,7 @@ impl Pkg for PackManager {
             .await?
             .get(0);
 
-        Ok(PackageQueryRes {
-            total,
-            packages: res,
-        })
+        Ok(PackageQueryRes { total, data: res })
     }
 
     async fn add_category(
@@ -531,7 +528,7 @@ mod test {
             .unwrap();
 
         assert_eq!(res.total, 2);
-        assert_eq!(res.packages[0].name, "test2");
+        assert_eq!(res.data[0].name, "test2");
     }
 
     #[tokio::test]

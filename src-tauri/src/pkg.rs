@@ -58,16 +58,16 @@ pub async fn get_package_by_id(
 
 #[tauri::command]
 pub async fn add_category(
-    name: PackageCategoryAddReq,
+    data: PackageCategoryAddReq,
     state: State<'_, PackManager>,
 ) -> Result<PackageCategoryAddRes, PkgError> {
     let pack_manager = state.inner();
 
-    pack_manager.add_category(name).await
+    pack_manager.add_category(data).await
 }
 
 #[tauri::command]
-pub async fn get_categories(
+pub async fn query_categories(
     data: PackageCategoryQueryReq,
     state: State<'_, PackManager>,
 ) -> Result<PackageCategoryQueryRes, PkgError> {

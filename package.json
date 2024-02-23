@@ -15,6 +15,7 @@
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
     "@vueuse/core": "^10.8.0",
+    "@vueuse/head": "^2.0.0",
     "primevue": "^3.48.1",
     "vue": "^3.4.19",
     "vue-router": "^4.2.5"

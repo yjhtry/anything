@@ -48,9 +48,10 @@
   "cSpell.words": [
     "primevue",
     "toastservice",
-    "uindex"
+    "uindex",
+    "usetoast"
   ],
   "rust-analyzer.linkedProjects": [
-    "./src-tauri/Cargo.toml",
+    "./src-tauri/Cargo.toml"
   ]
 }

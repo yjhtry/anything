@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 
-import 'primevue/resources/themes/lara-dark-teal/theme.css'
+import 'primevue/resources/themes/aura-dark-green/theme.css'
 
 import ToastService from 'primevue/toastservice'
 

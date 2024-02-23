@@ -6,6 +6,8 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const addCategory: typeof import('./src/services/pkg')['addCategory']
+  const addPackage: typeof import('./src/services/pkg')['addPackage']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const computed: typeof import('vue')['computed']
@@ -31,15 +33,21 @@ declare global {
   const defineComponent: typeof import('vue')['defineComponent']
   const defineLoader: typeof import('vue-router/auto')['defineLoader']
   const definePage: typeof import('unplugin-vue-router/runtime')['_definePage']
+  const deleteCategory: typeof import('./src/services/pkg')['deleteCategory']
+  const deletePackage: typeof import('./src/services/pkg')['deletePackage']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const getCategories: typeof import('./src/services/pkg')['getCategories']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getPackageById: typeof import('./src/services/pkg')['getPackageById']
+  const getPackages: typeof import('./src/services/pkg')['getPackages']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
   const injectLocal: typeof import('@vueuse/core')['injectLocal']
+  const invoke: typeof import('./src/utils/invoke')['invoke']
   const isDark: typeof import('./src/composables/dark')['isDark']
   const isDefined: typeof import('@vueuse/core')['isDefined']
   const isProxy: typeof import('vue')['isProxy']
@@ -110,6 +118,8 @@ declare global {
   const unref: typeof import('vue')['unref']
   const unrefElement: typeof import('@vueuse/core')['unrefElement']
   const until: typeof import('@vueuse/core')['until']
+  const updateCategory: typeof import('./src/services/pkg')['updateCategory']
+  const updatePackage: typeof import('./src/services/pkg')['updatePackage']
   const useActiveElement: typeof import('@vueuse/core')['useActiveElement']
   const useAnimate: typeof import('@vueuse/core')['useAnimate']
   const useArrayDifference: typeof import('@vueuse/core')['useArrayDifference']
@@ -183,6 +193,7 @@ declare global {
   const useIntersectionObserver: typeof import('@vueuse/core')['useIntersectionObserver']
   const useInterval: typeof import('@vueuse/core')['useInterval']
   const useIntervalFn: typeof import('@vueuse/core')['useIntervalFn']
+  const useInvoke: typeof import('./src/hooks/useInvoke')['useInvoke']
   const useKeyModifier: typeof import('@vueuse/core')['useKeyModifier']
   const useLastChanged: typeof import('@vueuse/core')['useLastChanged']
   const useLink: typeof import('vue-router/auto')['useLink']
@@ -300,6 +311,8 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly addCategory: UnwrapRef<typeof import('./src/services/pkg')['addCategory']>
+    readonly addPackage: UnwrapRef<typeof import('./src/services/pkg')['addPackage']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
@@ -325,15 +338,21 @@ declare module 'vue' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineLoader: UnwrapRef<typeof import('vue-router/auto')['defineLoader']>
     readonly definePage: UnwrapRef<typeof import('unplugin-vue-router/runtime')['_definePage']>
+    readonly deleteCategory: UnwrapRef<typeof import('./src/services/pkg')['deleteCategory']>
+    readonly deletePackage: UnwrapRef<typeof import('./src/services/pkg')['deletePackage']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getPackageById: UnwrapRef<typeof import('./src/services/pkg')['getPackageById']>
+    readonly getPackages: UnwrapRef<typeof import('./src/services/pkg')['getPackages']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectLocal: UnwrapRef<typeof import('@vueuse/core')['injectLocal']>
+    readonly invoke: UnwrapRef<typeof import('./src/utils/invoke')['invoke']>
     readonly isDark: UnwrapRef<typeof import('./src/composables/dark')['isDark']>
     readonly isDefined: UnwrapRef<typeof import('@vueuse/core')['isDefined']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
@@ -404,6 +423,8 @@ declare module 'vue' {
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly unrefElement: UnwrapRef<typeof import('@vueuse/core')['unrefElement']>
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
+    readonly updateCategory: UnwrapRef<typeof import('./src/services/pkg')['updateCategory']>
+    readonly updatePackage: UnwrapRef<typeof import('./src/services/pkg')['updatePackage']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>
@@ -477,6 +498,7 @@ declare module 'vue' {
     readonly useIntersectionObserver: UnwrapRef<typeof import('@vueuse/core')['useIntersectionObserver']>
     readonly useInterval: UnwrapRef<typeof import('@vueuse/core')['useInterval']>
     readonly useIntervalFn: UnwrapRef<typeof import('@vueuse/core')['useIntervalFn']>
+    readonly useInvoke: UnwrapRef<typeof import('./src/hooks/useInvoke')['useInvoke']>
     readonly useKeyModifier: UnwrapRef<typeof import('@vueuse/core')['useKeyModifier']>
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLink: UnwrapRef<typeof import('vue-router/auto')['useLink']>
@@ -587,6 +609,8 @@ declare module '@vue/runtime-core' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly addCategory: UnwrapRef<typeof import('./src/services/pkg')['addCategory']>
+    readonly addPackage: UnwrapRef<typeof import('./src/services/pkg')['addPackage']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
@@ -612,15 +636,21 @@ declare module '@vue/runtime-core' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineLoader: UnwrapRef<typeof import('vue-router/auto')['defineLoader']>
     readonly definePage: UnwrapRef<typeof import('unplugin-vue-router/runtime')['_definePage']>
+    readonly deleteCategory: UnwrapRef<typeof import('./src/services/pkg')['deleteCategory']>
+    readonly deletePackage: UnwrapRef<typeof import('./src/services/pkg')['deletePackage']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getPackageById: UnwrapRef<typeof import('./src/services/pkg')['getPackageById']>
+    readonly getPackages: UnwrapRef<typeof import('./src/services/pkg')['getPackages']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectLocal: UnwrapRef<typeof import('@vueuse/core')['injectLocal']>
+    readonly invoke: UnwrapRef<typeof import('./src/utils/invoke')['invoke']>
     readonly isDark: UnwrapRef<typeof import('./src/composables/dark')['isDark']>
     readonly isDefined: UnwrapRef<typeof import('@vueuse/core')['isDefined']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
@@ -691,6 +721,8 @@ declare module '@vue/runtime-core' {
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly unrefElement: UnwrapRef<typeof import('@vueuse/core')['unrefElement']>
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
+    readonly updateCategory: UnwrapRef<typeof import('./src/services/pkg')['updateCategory']>
+    readonly updatePackage: UnwrapRef<typeof import('./src/services/pkg')['updatePackage']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>
@@ -764,6 +796,7 @@ declare module '@vue/runtime-core' {
     readonly useIntersectionObserver: UnwrapRef<typeof import('@vueuse/core')['useIntersectionObserver']>
     readonly useInterval: UnwrapRef<typeof import('@vueuse/core')['useInterval']>
     readonly useIntervalFn: UnwrapRef<typeof import('@vueuse/core')['useIntervalFn']>
+    readonly useInvoke: UnwrapRef<typeof import('./src/hooks/useInvoke')['useInvoke']>
     readonly useKeyModifier: UnwrapRef<typeof import('@vueuse/core')['useKeyModifier']>
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLink: UnwrapRef<typeof import('vue-router/auto')['useLink']>

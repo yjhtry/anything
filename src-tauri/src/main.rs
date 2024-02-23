@@ -23,7 +23,7 @@ fn main() {
             pkg::delete_package,
             pkg::get_package_by_id,
             pkg::add_category,
-            pkg::get_categories,
+            pkg::query_categories,
             pkg::delete_category,
             pkg::update_category,
         ])

@@ -48,6 +48,9 @@ export default defineConfig({
       dts: true,
       dirs: [
         './src/composables',
+        './src/services',
+        './src/utils',
+        './src/hooks',
       ],
       vueTemplate: true,
     }),

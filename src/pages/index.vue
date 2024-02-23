@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import { invoke } from '@tauri-apps/api'
 import { useToast } from 'primevue/usetoast'
 
 defineOptions({
@@ -8,28 +7,20 @@ defineOptions({
 
 const toast = useToast()
 
-const name = ref('')
+const { data, loading, error } = useInvoke(getPackages({}))
 
-async function onGreeting() {
-  const pkgs = await invoke<any>('query_packages', { data: {} })
+const total = computed(() => data.value?.total || 0)
+const dataSource = computed(() => data.value?.data || [])
 
-  toast.add({ severity: 'success', summary: 'Get package count', detail: pkgs?.total })
-}
+watchEffect(() => {
+  if (error.value)
+    toast.add({ severity: 'error', summary: 'Error', detail: error.value })
+})
 </script>
 
 <template>
   <Toast position="bottom-right" />
-  <div>
-    <TheInput
-      v-model="name"
-      placeholder="What's your name?"
-      autocomplete="false"
-    />
-
-    <Button
-      @click="onGreeting"
-    >
-      greeting
-    </Button>
+  <div class="mb-4 border-none bg-[#18181b] p-4">
+    <PkgTable :loading="loading" :total="total" :data-source="dataSource" />
   </div>
 </template>
