@@ -41,7 +41,7 @@ pub struct PackageCategoryUpdateRes {
 /// Query package category list request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryQueryReq {
-    pub name: Option<String>,
+    pub name: String,
     pub parent_id: Option<i64>,
     pub page: i64,
     pub page_size: i64,

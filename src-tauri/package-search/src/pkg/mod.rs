@@ -55,5 +55,8 @@ pub trait Pkg {
     ) -> Result<PackageCategoryQueryRes, PkgError>;
 
     /// Query package category relations
-    async fn query_relations(&self, id: i64) -> Result<Vec<PackageCategoryRelation>, PkgError>;
+    async fn query_relations_by_pkg_id(
+        &self,
+        id: i64,
+    ) -> Result<Vec<PackageCategoryRelation>, PkgError>;
 }

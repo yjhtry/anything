@@ -5,4 +5,7 @@ pub enum PkgError {
 
     #[error("Not found package")]
     NotFoundPackage,
+
+    #[error("Not found package category")]
+    NotFoundCategory,
 }
