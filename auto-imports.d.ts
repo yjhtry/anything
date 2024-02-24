@@ -107,6 +107,7 @@ declare global {
   const toReactive: typeof import('@vueuse/core')['toReactive']
   const toRef: typeof import('vue')['toRef']
   const toRefs: typeof import('vue')['toRefs']
+  const toTypedSchema: typeof import('@vee-validate/yup')['toTypedSchema']
   const toValue: typeof import('vue')['toValue']
   const toggleDark: typeof import('./src/composables/dark')['toggleDark']
   const triggerRef: typeof import('vue')['triggerRef']
@@ -412,6 +413,7 @@ declare module 'vue' {
     readonly toReactive: UnwrapRef<typeof import('@vueuse/core')['toReactive']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
+    readonly toTypedSchema: UnwrapRef<typeof import('@vee-validate/yup')['toTypedSchema']>
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
     readonly toggleDark: UnwrapRef<typeof import('./src/composables/dark')['toggleDark']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
@@ -710,6 +712,7 @@ declare module '@vue/runtime-core' {
     readonly toReactive: UnwrapRef<typeof import('@vueuse/core')['toReactive']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
+    readonly toTypedSchema: UnwrapRef<typeof import('@vee-validate/yup')['toTypedSchema']>
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
     readonly toggleDark: UnwrapRef<typeof import('./src/composables/dark')['toggleDark']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>

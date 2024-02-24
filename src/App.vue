@@ -1,6 +1,6 @@
 <template>
   <main font-sans>
+    <TheNav />
     <RouterView />
-    <TheFooter />
   </main>
 </template>

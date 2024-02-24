@@ -1,0 +1,37 @@
+<template>
+  <nav text-xl class="nav flex px-6 py-3">
+    <div mr-auto text="4" font-700>
+      Anything
+    </div>
+    <div
+      icon-btn
+      class="flex items-center gap-3"
+      @click="toggleDark()"
+    >
+      <div text="4" i-carbon-sun dark:i-carbon-moon />
+      <a
+        i-carbon-logo-github icon-btn
+        rel="noreferrer"
+        href="https://github.com/antfu/vitesse-lite"
+        target="_blank"
+        title="GitHub"
+      />
+    </div>
+  </nav>
+</template>
+
+<style scoped>
+.nav {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 1100;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #27272a;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: calc(100% - var(--scrollbar-width, 0px));
+  transition:
+    background-color 0.5s,
+    border-color 0.5s;
+}
+</style>

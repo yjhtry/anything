@@ -21,16 +21,12 @@ const { loading, dataSource, total } = defineProps<{
     <Column field="name" header="Name" style="width: 25%" />
     <Column field="description" header="Description" style="width: 25%" />
     <Column field="reason" header="Reason" style="width: 25%" />
-    <Column field="link" header="Link" style="width: 25%">
+    <Column column-key="operation" header="Operation" style="width: 25%">
       <template #body="{ data }">
         <a :href="data.link" target="_blank">
-          <Button label="Open" link />
+          <Button label="Open" text />
         </a>
-      </template>
-    </Column>
-    <Column column-key="operation" header="Operation" style="width: 25%">
-      <template #body="">
-        <Button label="Edit" />
+        <Button label="Edit" text />
       </template>
     </Column>
   </DataTable>

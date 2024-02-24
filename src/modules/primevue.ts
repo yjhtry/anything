@@ -3,6 +3,7 @@ import type { App } from 'vue'
 import 'primevue/resources/themes/aura-dark-green/theme.css'
 
 import ToastService from 'primevue/toastservice'
+import FloatLabel from 'primevue/floatlabel'
 
 import Toast from 'primevue/toast'
 import PrimeVue from 'primevue/config'
@@ -15,6 +16,7 @@ import PrimeVue from 'primevue/config'
 
 export function install({ app }: { app: App }) {
   app.component('Toast', Toast)
+  app.component('FloatLabel', FloatLabel)
 
   app.use(ToastService)
   app.use(PrimeVue, { ripple: true })

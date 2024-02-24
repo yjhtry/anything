@@ -1,21 +1,24 @@
 import type { MaybeComputedRef } from '@vueuse/head'
+import type { MaybeRef } from 'vue'
 import type { Apis } from '~/utils/invoke'
 
-export function useInvoke<T, U = any>(api: MaybeComputedRef<Apis> | Promise<T>, params?: U) {
+type Callable<T> = (...args: any[]) => Promise<T>
+
+export function useInvoke<T, U = any>(api: MaybeRef<Apis> | Callable<T>, params?: MaybeComputedRef<U>) {
   const loading = ref(false)
   const data = shallowRef<T>()
   const error = ref('')
 
   const toFetch = () => {
-    const callApi = toValue(api)
+    const payload = toValue(params)
 
     loading.value = true
-    let result
+    let result: Promise<T>
 
-    if (callApi instanceof Promise)
-      result = callApi
+    if (typeof api === 'function')
+      result = api(payload)
     else
-      result = invoke(callApi, params)
+      result = invoke<T>(toValue(api), payload)
 
     result
       .then((res) => {
