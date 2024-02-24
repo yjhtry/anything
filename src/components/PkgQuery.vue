@@ -8,11 +8,13 @@ const { onSearch } = defineProps<{
 
 const isLoading = ref(false)
 
+const catesOptions = useCatesTree()
 const { handleSubmit, resetForm } = useForm<QueryPkgsParams>({ })
 
 const onSubmit = handleSubmit(async (values) => {
   try {
     isLoading.value = true
+    log(values)
     onSearch(values)
   }
   catch (error) {
@@ -40,9 +42,15 @@ const [DefineInput, ReuseInput] = createReusableTemplate<{ name: string, label: 
   <div v-bind="$attrs" px-2 pt-4>
     <form @submit="onSubmit">
       <div class="flex flex-wrap gap-8">
-        <ReuseInput name="name" label="Name" />
-        <ReuseInput name="description" label="Description" />
-        <ReuseInput name="reason" label="Reason" />
+        <ReuseInput name="name" label="Name" class="inline-block w-67" />
+        <ReuseInput name="description" label="Description" class="inline-block w-67" />
+        <ReuseInput name="reason" label="Reason" class="inline-block w-67" />
+        <TheTreeSelect
+          name="categories"
+          label="Categories"
+          class="inline-block w-67"
+          :tree-props="{ options: catesOptions, selectionMode: 'multiple' }"
+        />
       </div>
       <div class="mt-4 flex justify-end gap-4">
         <Button severity="secondary" :loading="isLoading" @click="onReset">

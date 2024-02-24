@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::abi::{default_page, default_page_size};
+
 /// Package Categories
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategory {
@@ -41,9 +43,13 @@ pub struct PackageCategoryUpdateRes {
 /// Query package category list request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryQueryReq {
+    #[serde(default)]
     pub name: String,
+    #[serde(default)]
     pub parent_id: Option<i64>,
+    #[serde(default = "default_page")]
     pub page: i64,
+    #[serde(default = "default_page_size")]
     pub page_size: i64,
 }
 

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::abi::{default_page, default_page_size};
+
 /// Package
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Package {
@@ -61,14 +63,6 @@ pub struct PackageQueryReq {
     pub page: i64,
     #[serde(default = "default_page_size")]
     pub page_size: i64,
-}
-
-fn default_page() -> i64 {
-    1
-}
-
-fn default_page_size() -> i64 {
-    10
 }
 
 /// Query package response

@@ -18,6 +18,11 @@ const { loading, dataSource, total } = defineProps<{
     :rows-per-page-options="[5, 10, 20, 50]"
     table-style="min-width: 50rem"
   >
+    <template #empty>
+      <div text="center" class="py-4">
+        No packages found
+      </div>
+    </template>
     <Column field="name" header="Name" style="width: 25%" />
     <Column field="description" header="Description" style="width: 25%" />
     <Column field="reason" header="Reason" style="width: 25%" />

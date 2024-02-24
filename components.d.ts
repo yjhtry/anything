@@ -11,11 +11,15 @@ declare module 'vue' {
     Column: typeof import('primevue/column')['default']
     DataTable: typeof import('primevue/datatable')['default']
     InputText: typeof import('primevue/inputtext')['default']
+    MultiSelect: typeof import('primevue/multiselect')['default']
     PkgQuery: typeof import('./src/components/PkgQuery.vue')['default']
     PkgTable: typeof import('./src/components/PkgTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TheCaSelect: typeof import('./src/components/form/TheCaSelect.vue')['default']
     TheInput: typeof import('./src/components/form/TheInput.vue')['default']
     TheNav: typeof import('./src/components/TheNav.vue')['default']
+    TheTreeSelect: typeof import('./src/components/form/TheTreeSelect.vue')['default']
+    TreeSelect: typeof import('primevue/treeselect')['default']
   }
 }

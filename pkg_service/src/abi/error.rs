@@ -24,3 +24,11 @@ impl serde::Serialize for PkgError {
         }
     }
 }
+
+pub fn default_page() -> i64 {
+    1
+}
+
+pub fn default_page_size() -> i64 {
+    10
+}

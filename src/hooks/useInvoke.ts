@@ -25,6 +25,7 @@ export function useInvoke<T, U = any>(api: MaybeRef<Apis> | Callable<T>, params?
         data.value = res as T
       })
       .catch((err) => {
+        console.error(err)
         error.value = err
       })
       .finally(() => loading.value = false)

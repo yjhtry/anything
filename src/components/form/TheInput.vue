@@ -2,40 +2,31 @@
 import type { InputTextProps } from 'primevue/inputtext'
 import { useField } from 'vee-validate'
 
-interface Props extends InputTextProps {
+interface Props {
   name: string
   label?: string
-  placeholder?: string
-  validateTrigger?: 'change' | 'blur' | 'input'
+  inputProps?: InputTextProps
 }
 
 const {
   name,
   label,
-  validateTrigger = 'input',
-  ...rest
+  inputProps,
 } = defineProps<Props>()
 
-const { errorMessage, value, handleChange, handleBlur } = useField<string>(() => name, undefined, {
+const { errorMessage, value } = useField<string>(() => name, undefined, {
   validateOnValueUpdate: false,
 })
-
-const validationListeners = {
-  blur: (evt: Event) => handleBlur(evt, validateTrigger === 'blur'),
-  change: (evt: Event) => handleChange(evt, validateTrigger === 'change'),
-  input: (evt: Event) => handleChange(evt, validateTrigger === 'input'),
-}
 </script>
 
 <template>
   <FloatLabel>
     <InputText
-      v-bind="rest"
+      v-bind="inputProps"
       v-model="value"
-      :value="value"
       :invalid="!!errorMessage"
       type="text"
-      v-on="validationListeners"
+      w-full
     />
     <label>{{ label }}</label>
   </FloatLabel>
