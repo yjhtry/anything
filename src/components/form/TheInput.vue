@@ -29,5 +29,6 @@ const { errorMessage, value } = useField<string>(() => name, undefined, {
       w-full
     />
     <label>{{ label }}</label>
+    <span v-if="!!errorMessage" class="text-xs text-red-500">{{ errorMessage }}</span>
   </FloatLabel>
 </template>

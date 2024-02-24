@@ -18,6 +18,11 @@ const { loading, dataSource, total } = defineProps<{
     :rows-per-page-options="[5, 10, 20, 50]"
     table-style="min-width: 50rem"
   >
+    <template #header>
+      <div class="flex justify-end">
+        <PkgAddModal />
+      </div>
+    </template>
     <template #empty>
       <div text="center" class="py-4">
         No packages found

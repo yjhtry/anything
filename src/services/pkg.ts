@@ -4,17 +4,20 @@ export interface Package {
   description: string
   reason: string
   link: string
+  categories: number[]
   update_at: string
   create_at: string
 }
 
 type OmitDefault<T> = Omit<T, 'id' | 'update_at' | 'create_at'>
 
-export function addPackage(data: OmitDefault<Package>) {
+export type PackageWithoutDefault = OmitDefault<Package>
+
+export function addPackage(data: PackageWithoutDefault) {
   return invoke<{ id: number }>('add_package', { data })
 }
 
-export function updatePackage(data: OmitDefault<Package>) {
+export function updatePackage(data: PackageWithoutDefault) {
   return invoke<{ id: number }>('update_package', { data })
 }
 
@@ -51,11 +54,13 @@ export interface Category {
   update_at: string
 }
 
-export function addCategory(data: OmitDefault<Category>) {
+export type CategoryWithoutDefault = OmitDefault<Category>
+
+export function addCategory(data: CategoryWithoutDefault) {
   return invoke<{ id: number }>('add_category', { data })
 }
 
-export function updateCategory(data: OmitDefault<Category>) {
+export function updateCategory(data: CategoryWithoutDefault) {
   return invoke<{ id: number }>('update_category', { data })
 }
 

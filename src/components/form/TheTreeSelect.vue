@@ -21,7 +21,6 @@ const { value, handleChange, errorMessage } = useField<any>(() => name, undefine
 })
 
 function onChange(node: any, select: boolean) {
-  log(node)
   let mode = 'single'
   if (treeProps?.selectionMode)
     mode = treeProps.selectionMode

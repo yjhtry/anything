@@ -14,7 +14,6 @@ const { handleSubmit, resetForm } = useForm<QueryPkgsParams>({ })
 const onSubmit = handleSubmit(async (values) => {
   try {
     isLoading.value = true
-    log(values)
     onSearch(values)
   }
   catch (error) {
