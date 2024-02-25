@@ -9,6 +9,10 @@ const { mode = 'add', row } = defineProps<{
   row?: Package
 }>()
 
+const emit = defineEmits<{
+  reload: []
+}>()
+
 const toast = useToast()
 
 const visible = ref(false)
@@ -35,18 +39,20 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     if (mode === 'add') {
       await addPackage({ ...values })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!' })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!', life: 3000 })
     }
     else {
       await updatePackage({ ...values, id: row!.id })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success!' })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success!', life: 3000 })
     }
+
+    emit('reload')
 
     onClose()
   }
 
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error })
+    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
   }
 })
 
@@ -71,7 +77,7 @@ watchEffect(() => {
         <TheInput name="reason" label="Reason" w-67 />
       </div>
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="link" label="Link" w-67 />
+        <TheInput name="link" label="Link" w-67 :control-props="{ autocomplete: 'false' }" />
       </div>
       <div v-if="mode === 'add'" class="align-items-center mb-3 flex gap-3">
         <TheTreeSelect

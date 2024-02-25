@@ -7,22 +7,25 @@ const { onSearch } = defineProps<{
   onSearch: (query: QueryPkgsParams) => any
 }>()
 
+const emit = defineEmits<{ search: [QueryPkgsParams] }>()
+
 const toast = useToast()
 const catesOptions = useCatesTree()
 const { handleSubmit, resetForm, isSubmitting } = useForm<State>()
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    await onSearch(values)
+    emit('search', values)
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error })
+    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
   }
 })
 
 function onReset() {
   resetForm()
   onSearch({})
+  emit('search', {})
 }
 </script>
 

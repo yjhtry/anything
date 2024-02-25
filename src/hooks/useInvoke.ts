@@ -35,5 +35,5 @@ export function useInvoke<T, U = any>(api: MaybeRef<Apis> | Callable<T>, params?
     toFetch()
   })
 
-  return { loading, data, error }
+  return { loading, data, error, reload: toFetch }
 }

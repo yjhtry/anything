@@ -9,6 +9,10 @@ const { mode = 'add', row } = defineProps<{
   row?: Category
 }>()
 
+const emit = defineEmits<{
+  reload: []
+}>()
+
 const toast = useToast()
 
 const visible = ref(false)
@@ -33,18 +37,20 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     if (mode === 'add') {
       await addCategory({ ...values })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!' })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!', life: 3000 })
     }
     else {
       await updateCategory({ ...values, id: row!.id })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success' })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success', life: 3000 })
     }
+
+    emit('reload')
 
     onClose()
   }
 
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error })
+    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
   }
 })
 

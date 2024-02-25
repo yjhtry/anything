@@ -7,6 +7,10 @@ const { loading, dataSource, total } = defineProps<{
   total: number
 }>()
 
+const emit = defineEmits<{
+  reload: []
+}>()
+const router = useRouter()
 const confirm = useConfirm()
 const toast = useToast()
 
@@ -22,13 +26,20 @@ function onDelete(event: any, id: number) {
     accept: async () => {
       try {
         await deleteCategory(id)
-        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted' })
+
+        emit('reload')
+
+        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted', life: 3000 })
       }
       catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: error })
+        toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
       }
     },
   })
+}
+
+function onBack() {
+  router.push('/')
 }
 </script>
 
@@ -44,8 +55,9 @@ function onDelete(event: any, id: number) {
     class="w-full"
   >
     <template #header>
-      <div class="flex justify-end">
-        <CateAddOrUpdateModal />
+      <div class="flex justify-end gap-3">
+        <Button label="Back" severity="secondary" @click="onBack" />
+        <CateAddOrUpdateModal @reload="emit('reload')" />
       </div>
     </template>
     <template #empty>
@@ -58,7 +70,7 @@ function onDelete(event: any, id: number) {
     <Column field="parent_id" header="parent_id" style="width: 25%" />
     <Column column-key="operation" header="Operation" style="width: 25%">
       <template #body="{ data }">
-        <CateAddOrUpdateModal mode="edit" :row="data" />
+        <CateAddOrUpdateModal mode="edit" :row="data" @reload="emit('reload')" />
         <Button
           label="del" text class="px-2"
           @click="onDelete($event, data.id)"

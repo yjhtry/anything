@@ -7,6 +7,10 @@ const { loading, dataSource, total } = defineProps<{
   total: number
 }>()
 
+const emit = defineEmits<{
+  reload: []
+}>()
+
 const confirm = useConfirm()
 const toast = useToast()
 const router = useRouter()
@@ -42,10 +46,11 @@ function onDelete(event: any, id: number) {
     accept: async () => {
       try {
         await deletePackage(id)
-        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted' })
+        emit('reload')
+        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted', life: 3000 })
       }
       catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete record' })
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete record', life: 5000 })
       }
     },
   })
@@ -57,19 +62,18 @@ function openCatePage() {
 
 async function onCellEditComplete(event: any) {
   try {
-    const { field, data, newValue } = event
-    log(event)
-    data[field] = newValue
+    const { data, newValue } = event
+
     await updatePkgCates({ id: data.id, categories: newValue })
+
+    emit('reload')
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Update success!', life: 3000 })
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error })
+    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
   }
 }
-
-wLog(dataSource, '====')
 </script>
 
 <template>
@@ -87,8 +91,8 @@ wLog(dataSource, '====')
   >
     <template #header>
       <div class="flex justify-end gap-3">
-        <Button label="Category" @click="openCatePage" />
-        <PkgAddOrUpdateModal />
+        <Button label="Category" severity="secondary" @click="openCatePage" />
+        <PkgAddOrUpdateModal @reload="emit('reload')" />
       </div>
     </template>
     <template #empty>
@@ -118,7 +122,7 @@ wLog(dataSource, '====')
         <a :href="data.link" target="_blank">
           <Button label="open" text class="px-2" />
         </a>
-        <PkgAddOrUpdateModal mode="edit" :row="data" />
+        <PkgAddOrUpdateModal mode="edit" :row="data" @reload="emit('reload')" />
         <Button
           label="del" text class="px-2"
           @click="onDelete($event, data.id)"
