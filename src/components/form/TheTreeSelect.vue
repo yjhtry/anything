@@ -4,34 +4,36 @@ import type { TreeSelectProps } from 'primevue/treeselect'
 interface Props {
   name: string
   label?: string
-  treeProps?: TreeSelectProps
+  controlProps?: TreeSelectProps
   transform?: (value: any) => any
 }
 
 const {
   name,
   label,
-  treeProps,
+  controlProps,
   transform = v => v,
 } = defineProps<Props>()
 
 const _value = ref<any>()
 
+const isSubmitting = useIsSubmitting()
 const { value, handleChange, errorMessage } = useField<any>(() => name, undefined, {
   validateOnValueUpdate: false,
 })
 function onChange(checked: any) {
-  const mode = treeProps?.selectionMode || 'single'
+  log(controlProps)
+  const mode = controlProps?.selectionMode || 'single'
 
   const result = Object.keys(checked).map(transform)
 
   handleChange(mode === 'single' ? result[0] : result)
-
-  handleChange(result)
 }
 
 watchEffect(() => {
-  _value.value = value.value?.reduce((acc: any, cur: any) => {
+  const list = Array.isArray(value.value) ? value.value : value ? [value] : []
+
+  _value.value = list.reduce((acc: any, cur: any) => {
     acc[cur] = true
     return acc
   }, {})
@@ -41,9 +43,10 @@ watchEffect(() => {
 <template>
   <FloatLabel>
     <TreeSelect
-      v-bind="treeProps"
+      v-bind="controlProps"
       :model-value="_value"
       class="w-full"
+      :disabled="isSubmitting"
       :invalid="!!errorMessage"
       @change="onChange"
     />

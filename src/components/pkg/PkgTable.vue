@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Package } from '../services/pkg'
+import type { Package } from '~/services/pkg'
 
 const { loading, dataSource, total } = defineProps<{
   loading: boolean
@@ -9,6 +9,7 @@ const { loading, dataSource, total } = defineProps<{
 
 const confirm = useConfirm()
 const toast = useToast()
+const router = useRouter()
 
 function onDelete(event: any, id: number) {
   confirm.require({
@@ -30,6 +31,10 @@ function onDelete(event: any, id: number) {
     },
   })
 }
+
+function openCatePage() {
+  router.push('/category')
+}
 </script>
 
 <template>
@@ -44,7 +49,8 @@ function onDelete(event: any, id: number) {
     class="w-full"
   >
     <template #header>
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-3">
+        <Button label="Category" @click="openCatePage" />
         <PkgAddOrUpdateModal />
       </div>
     </template>

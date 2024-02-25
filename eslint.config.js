@@ -4,7 +4,9 @@ export default antfu(
   {
     ignores: [
       './src-tauri',
-      '/pkg_service',
+      './pkg_service',
+      './public',
+      './rfcs',
     ],
     unocss: true,
     formatters: true,

@@ -265,6 +265,18 @@ impl Pkg for PackManager {
     }
 
     async fn delete_category(&self, id: i64) -> Result<(), PkgError> {
+        // check if has child category
+        let has_child: i64 =
+            sqlx::query("SELECT COUNT(*) FROM package_categories WHERE parent_id = $1")
+                .bind(id)
+                .fetch_one(&self.pool)
+                .await?
+                .get(0);
+
+        if has_child > 0 {
+            return Err(PkgError::CannotDeleteHasChildCategory);
+        }
+
         sqlx::query!(
             r#"DELETE FROM package_categories
           WHERE id = $1"#,

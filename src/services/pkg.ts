@@ -61,7 +61,7 @@ export function addCategory(data: CategoryWithoutDefault) {
   return invoke<{ id: number }>('add_category', { data })
 }
 
-export function updateCategory(data: CategoryWithoutDefault) {
+export function updateCategory(data: Omit<Category, 'create_at' | 'update_at'>) {
   return invoke<{ id: number }>('update_category', { data })
 }
 

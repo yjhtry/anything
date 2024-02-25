@@ -46,7 +46,7 @@ export default defineConfig({
           '@vee-validate/yup': ['toTypedSchema'],
           'primevue/usetoast': ['useToast'],
           'primevue/useconfirm': ['useConfirm'],
-          'vee-validate': ['useForm', 'useField'],
+          'vee-validate': ['useForm', 'useField', 'useIsSubmitting'],
         },
       ],
       dts: true,

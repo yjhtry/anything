@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { array, number, object, string } from 'yup'
-import type { Package, PackageWithoutDefault } from '~/services/pkg'
+import { number, object, string } from 'yup'
+import type { Category, CategoryWithoutDefault } from '~/services/pkg'
 
-type State = PackageWithoutDefault
+type State = CategoryWithoutDefault
 
 const { mode = 'add', row } = defineProps<{
   mode?: 'add' | 'edit'
-  row?: Package
+  row?: Category
 }>()
 
 const toast = useToast()
@@ -16,10 +16,7 @@ const catesOptions = useCatesTree()
 
 const validationSchema = toTypedSchema(object({
   name: string().max(36).trim().required('Name is required'),
-  description: string().trim().required('Description is required'),
-  reason: string().trim().required('Reason is required'),
-  link: string().trim().url().required('Link is required'),
-  categories: array().of(number()),
+  categories: number(),
 }))
 
 const { handleSubmit, resetForm, setValues } = useForm<State>({
@@ -32,21 +29,22 @@ function onClose() {
 }
 
 const onSubmit = handleSubmit(async (values) => {
+  log(values, 'values')
   try {
     if (mode === 'add') {
-      await addPackage({ ...values })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Package has been add' })
+      await addCategory({ ...values })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!' })
     }
     else {
-      await updatePackage({ ...values, id: row!.id })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Package has been updated' })
+      await updateCategory({ ...values, id: row!.id })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success' })
     }
 
     onClose()
   }
 
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: (error as any).message })
+    toast.add({ severity: 'error', summary: 'Error', detail: error })
   }
 })
 
@@ -54,8 +52,6 @@ watchEffect(() => {
   if (mode === 'edit' && row)
     setValues({ ...row })
 })
-
-wLog(row)
 </script>
 
 <template>
@@ -67,20 +63,11 @@ wLog(row)
         <TheInput name="name" label="Name" w-67 />
       </div>
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="description" label="Description" w-67 />
-      </div>
-      <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="reason" label="Reason" w-67 />
-      </div>
-      <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="link" label="Link" w-67 />
-      </div>
-      <div class="align-items-center mb-3 flex gap-3">
         <TheTreeSelect
           w-67
-          name="categories" label="Categories"
+          name="parent_id" label="Categories"
           :transform="Number"
-          :tree-props="{ options: catesOptions, selectionMode: 'multiple' }"
+          :control-props="{ options: catesOptions }"
         />
       </div>
     </div>

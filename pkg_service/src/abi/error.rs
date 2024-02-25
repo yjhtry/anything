@@ -8,6 +8,9 @@ pub enum PkgError {
 
     #[error("Not found package category")]
     NotFoundCategory,
+
+    #[error("Cannot delete has child category")]
+    CannotDeleteHasChildCategory,
 }
 
 impl serde::Serialize for PkgError {
@@ -19,8 +22,7 @@ impl serde::Serialize for PkgError {
             PkgError::DbError(e) => {
                 serializer.serialize_str(format!("DbError: {}", e.to_string()).as_str())
             }
-            PkgError::NotFoundPackage => serializer.serialize_str("NotFoundPackage"),
-            PkgError::NotFoundCategory => serializer.serialize_str("NotFoundCategory"),
+            e => serializer.serialize_str(e.to_string().as_str()),
         }
     }
 }

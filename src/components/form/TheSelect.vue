@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { InputTextProps } from 'primevue/inputtext'
+import type { DropdownProps } from 'primevue/dropdown'
 
 interface Props {
   name: string
   label?: string
-  controlProps?: InputTextProps
+  controlProps?: DropdownProps
 }
 
 const {
@@ -14,23 +14,20 @@ const {
 } = defineProps<Props>()
 
 const isSubmitting = useIsSubmitting()
-
-const { errorMessage, value } = useField<string>(() => name, undefined, {
+const { value, errorMessage } = useField<any>(() => name, undefined, {
   validateOnValueUpdate: false,
 })
 </script>
 
 <template>
   <FloatLabel>
-    <InputText
+    <Dropdown
       v-bind="controlProps"
       v-model="value"
+      class="w-full"
       :disabled="isSubmitting"
       :invalid="!!errorMessage"
-      type="text"
-      w-full
     />
     <label>{{ label }}</label>
-    <span v-if="!!errorMessage" class="text-xs text-red-500">{{ errorMessage }}</span>
   </FloatLabel>
 </template>
