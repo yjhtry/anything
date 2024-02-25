@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useForm } from 'vee-validate'
 import type { QueryPkgsParams } from '~/services/pkg'
+
+type State = Omit<QueryPkgsParams, 'page' | 'page_size'>
 
 const { onSearch } = defineProps<{
   onSearch: (query: QueryPkgsParams) => void
@@ -9,7 +10,7 @@ const { onSearch } = defineProps<{
 const isLoading = ref(false)
 
 const catesOptions = useCatesTree()
-const { handleSubmit, resetForm } = useForm<QueryPkgsParams>({ })
+const { handleSubmit, resetForm } = useForm<State>()
 
 const onSubmit = handleSubmit(async (values) => {
   try {
@@ -48,6 +49,7 @@ const [DefineInput, ReuseInput] = createReusableTemplate<{ name: string, label: 
           name="categories"
           label="Categories"
           class="inline-block w-67"
+          :transform="Number"
           :tree-props="{ options: catesOptions, selectionMode: 'multiple' }"
         />
       </div>

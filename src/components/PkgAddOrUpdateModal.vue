@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { useForm } from 'vee-validate'
 import { array, number, object, string } from 'yup'
-import { useToast } from 'primevue/usetoast'
-import type { PackageWithoutDefault } from '~/services/pkg'
+import type { Package, PackageWithoutDefault } from '~/services/pkg'
+
+type State = PackageWithoutDefault
+
+const { mode = 'add', row } = defineProps<{
+  mode?: 'add' | 'edit'
+  row?: Package
+}>()
 
 const toast = useToast()
 
@@ -17,7 +22,7 @@ const validationSchema = toTypedSchema(object({
   categories: array().of(number()),
 }))
 
-const { handleSubmit, resetForm } = useForm<PackageWithoutDefault>({
+const { handleSubmit, resetForm, setValues } = useForm<State>({
   validationSchema,
 })
 
@@ -28,16 +33,34 @@ function onClose() {
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    await addPackage(values)
+    if (mode === 'add') {
+      await addPackage({ ...values })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Package has been add' })
+    }
+    else {
+      await updatePackage({ ...values, id: row!.id })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Package has been updated' })
+    }
+
+    onClose()
   }
+
   catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: (error as any).message })
   }
 })
+
+watchEffect(() => {
+  if (mode === 'edit' && row)
+    setValues({ ...row })
+})
+
+wLog(row)
 </script>
 
 <template>
-  <Button label="Show" @click="visible = true" />
+  <Button v-if="mode === 'add'" label="Add" @click="visible = true" />
+  <Button v-else label="edit" text class="px-2" @click="visible = true" />
   <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
     <div class="mt-8 space-y-8">
       <div class="align-items-center mb-3 flex gap-3">
@@ -56,6 +79,7 @@ const onSubmit = handleSubmit(async (values) => {
         <TheTreeSelect
           w-67
           name="categories" label="Categories"
+          :transform="Number"
           :tree-props="{ options: catesOptions, selectionMode: 'multiple' }"
         />
       </div>

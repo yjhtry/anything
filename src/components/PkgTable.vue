@@ -16,7 +16,7 @@ const { loading, dataSource, total } = defineProps<{
     :total-records="total"
     :rows="10"
     :rows-per-page-options="[5, 10, 20, 50]"
-    table-style="min-width: 50rem"
+    class="w-200"
   >
     <template #header>
       <div class="flex justify-end">
@@ -34,9 +34,9 @@ const { loading, dataSource, total } = defineProps<{
     <Column column-key="operation" header="Operation" style="width: 25%">
       <template #body="{ data }">
         <a :href="data.link" target="_blank">
-          <Button label="Open" text />
+          <Button label="open" text class="px-2" />
         </a>
-        <Button label="Edit" text />
+        <PkgAddOrUpdateModal mode="edit" :row="data" />
       </template>
     </Column>
   </DataTable>

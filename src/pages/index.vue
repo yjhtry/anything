@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import { useToast } from 'primevue/usetoast'
 import type { QueryPkgsParams } from '~/services/pkg'
 
 defineOptions({

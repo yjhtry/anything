@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import type { TreeSelectProps } from 'primevue/treeselect'
-import { useField } from 'vee-validate'
 
 interface Props {
   name: string
   label?: string
   treeProps?: TreeSelectProps
+  transform?: (value: any) => any
 }
 
 const {
   name,
   label,
   treeProps,
+  transform = v => v,
 } = defineProps<Props>()
 
 const _value = ref<any>()
@@ -19,42 +20,32 @@ const _value = ref<any>()
 const { value, handleChange, errorMessage } = useField<any>(() => name, undefined, {
   validateOnValueUpdate: false,
 })
+function onChange(checked: any) {
+  const mode = treeProps?.selectionMode || 'single'
 
-function onChange(node: any, select: boolean) {
-  let mode = 'single'
-  if (treeProps?.selectionMode)
-    mode = treeProps.selectionMode
+  const result = Object.keys(checked).map(transform)
 
-  if (mode === 'single') {
-    handleChange(select ? node.data : undefined)
-
-    return
-  }
-
-  const result = [...value.value || []]
-
-  if (select) {
-    result.push(node.data)
-  }
-  else {
-    const index = result.indexOf(node.data)
-    if (index > -1)
-      result.splice(index, 1)
-  }
+  handleChange(mode === 'single' ? result[0] : result)
 
   handleChange(result)
 }
+
+watchEffect(() => {
+  _value.value = value.value?.reduce((acc: any, cur: any) => {
+    acc[cur] = true
+    return acc
+  }, {})
+})
 </script>
 
 <template>
   <FloatLabel>
     <TreeSelect
       v-bind="treeProps"
-      v-model="_value"
+      :model-value="_value"
       class="w-full"
       :invalid="!!errorMessage"
-      @node-select="(node) => onChange(node, true)"
-      @node-unselect="(node) => onChange(node, false)"
+      @change="onChange"
     />
     <label>{{ label }}</label>
   </FloatLabel>

@@ -17,7 +17,7 @@ export function addPackage(data: PackageWithoutDefault) {
   return invoke<{ id: number }>('add_package', { data })
 }
 
-export function updatePackage(data: PackageWithoutDefault) {
+export function updatePackage(data: Omit<Package, 'create_at' | 'update_at'>) {
   return invoke<{ id: number }>('update_package', { data })
 }
 
@@ -29,6 +29,7 @@ export interface QueryPkgsParams {
   name?: string
   description?: string
   reason?: string
+  categories?: number[]
   page?: number
   page_size?: number
 }

@@ -44,6 +44,8 @@ export default defineConfig({
           // add any other imports you were relying on
           'vue-router/auto': ['useLink'],
           '@vee-validate/yup': ['toTypedSchema'],
+          'primevue/usetoast': ['useToast'],
+          'vee-validate': ['useForm', 'useField'],
         },
       ],
       dts: true,

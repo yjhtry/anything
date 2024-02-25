@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { InputTextProps } from 'primevue/inputtext'
-import { useField } from 'vee-validate'
 
 interface Props {
   name: string
