@@ -17,6 +17,9 @@ dependencies:
   '@vueuse/head':
     specifier: ^2.0.0
     version: 2.0.0(vue@3.4.19)
+  primeicons:
+    specifier: ^6.0.1
+    version: 6.0.1
   primevue:
     specifier: ^3.49.0
     version: 3.49.0(vue@3.4.19)
@@ -5440,6 +5443,10 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
+
+  /primeicons@6.0.1:
+    resolution: {integrity: sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==}
+    dev: false
 
   /primevue@3.49.0(vue@3.4.19):
     resolution: {integrity: sha512-1lFTU/WK1wcjaaKqce7XldrH4MGPySXxH9Nyoj0d9QiGehePw9JUQrGhVgfjx3I/MD/VgE85wF1HihqtPJehbw==}

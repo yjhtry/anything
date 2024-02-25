@@ -1,11 +1,14 @@
 import type { App } from 'vue'
 
 import 'primevue/resources/themes/aura-dark-green/theme.css'
+import 'primeicons/primeicons.css'
 
 import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 import FloatLabel from 'primevue/floatlabel'
 
 import Toast from 'primevue/toast'
+import ConfirmPopup from 'primevue/confirmpopup'
 import PrimeVue from 'primevue/config'
 
 // Most of components will be imported automatically in Vite
@@ -16,8 +19,10 @@ import PrimeVue from 'primevue/config'
 
 export function install({ app }: { app: App }) {
   app.component('Toast', Toast)
+  app.component('ConfirmPopup', ConfirmPopup)
   app.component('FloatLabel', FloatLabel)
 
   app.use(ToastService)
+  app.use(ConfirmationService)
   app.use(PrimeVue, { ripple: true })
 }

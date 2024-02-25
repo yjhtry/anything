@@ -13,7 +13,6 @@ declare module 'vue' {
     Dialog: typeof import('primevue/dialog')['default']
     InputText: typeof import('primevue/inputtext')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
-    PkgAddModal: typeof import('./src/components/PkgAddModal.vue')['default']
     PkgAddOrUpdateModal: typeof import('./src/components/PkgAddOrUpdateModal.vue')['default']
     PkgQuery: typeof import('./src/components/PkgQuery.vue')['default']
     PkgTable: typeof import('./src/components/PkgTable.vue')['default']

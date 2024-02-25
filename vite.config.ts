@@ -45,6 +45,7 @@ export default defineConfig({
           'vue-router/auto': ['useLink'],
           '@vee-validate/yup': ['toTypedSchema'],
           'primevue/usetoast': ['useToast'],
+          'primevue/useconfirm': ['useConfirm'],
           'vee-validate': ['useForm', 'useField'],
         },
       ],
