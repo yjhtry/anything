@@ -20,7 +20,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <Toast position="bottom-right" />
+  <Toast position="top-right" />
   <div class="mt-4 px-3">
     <div class="rounded-md border-none bg-[#18181b] p-2">
       <CateQuery class="mb-5" :on-search="onSearch" />

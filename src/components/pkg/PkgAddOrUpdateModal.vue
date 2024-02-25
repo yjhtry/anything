@@ -73,7 +73,7 @@ watchEffect(() => {
       <div class="align-items-center mb-3 flex gap-3">
         <TheInput name="link" label="Link" w-67 />
       </div>
-      <div class="align-items-center mb-3 flex gap-3">
+      <div v-if="mode === 'add'" class="align-items-center mb-3 flex gap-3">
         <TheTreeSelect
           w-67
           name="categories" label="Categories"

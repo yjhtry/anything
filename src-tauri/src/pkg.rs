@@ -2,8 +2,8 @@ use pkg_service::{
     types::{
         Package, PackageAddReq, PackageAddRes, PackageCategoryAddReq, PackageCategoryAddRes,
         PackageCategoryQueryReq, PackageCategoryQueryRes, PackageCategoryUpdateReq,
-        PackageCategoryUpdateRes, PackageQueryReq, PackageQueryRes, PackageUpdateReq,
-        PackageUpdateRes,
+        PackageCategoryUpdateRes, PackageQueryReq, PackageQueryRes, PackageUpdateCategoriesReq,
+        PackageUpdateCategoriesRes, PackageUpdateReq, PackageUpdateRes,
     },
     PackManager, Pkg, PkgError,
 };
@@ -27,6 +27,16 @@ pub async fn add_package(
     let pack_manager = state.inner();
 
     pack_manager.add_package(data).await
+}
+
+#[tauri::command]
+pub async fn update_package_categories(
+    data: PackageUpdateCategoriesReq,
+    state: State<'_, PackManager>,
+) -> Result<PackageUpdateCategoriesRes, PkgError> {
+    let pack_manager = state.inner();
+
+    pack_manager.update_package_categories(data).await
 }
 
 #[tauri::command]

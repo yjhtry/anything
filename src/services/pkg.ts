@@ -21,6 +21,10 @@ export function updatePackage(data: Omit<Package, 'create_at' | 'update_at'>) {
   return invoke<{ id: number }>('update_package', { data })
 }
 
+export function updatePkgCates(data: { id: number, categories: number[] }) {
+  return invoke<{ id: number }>('update_package_categories', { data })
+}
+
 export function deletePackage(id: number) {
   return invoke<undefined>('delete_package', { id })
 }

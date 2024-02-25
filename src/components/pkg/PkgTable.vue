@@ -10,6 +10,25 @@ const { loading, dataSource, total } = defineProps<{
 const confirm = useConfirm()
 const toast = useToast()
 const router = useRouter()
+const { data: categories } = useInvoke(getCategories, { page: 1, page_size: 1000 })
+
+const cateMap = computed(() => {
+  if (categories.value) {
+    return categories.value.data.reduce((acc: Record<number, string>, cur) => {
+      acc[cur.id] = cur.name
+      return acc
+    }, {})
+  }
+
+  return {}
+})
+
+const cateTreeOptions = computed(() => {
+  if (categories.value)
+    return retrieveCateTreeData(categories.value.data)
+
+  return []
+})
 
 function onDelete(event: any, id: number) {
   confirm.require({
@@ -35,6 +54,22 @@ function onDelete(event: any, id: number) {
 function openCatePage() {
   router.push('/category')
 }
+
+async function onCellEditComplete(event: any) {
+  try {
+    const { field, data, newValue } = event
+    log(event)
+    data[field] = newValue
+    await updatePkgCates({ id: data.id, categories: newValue })
+
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Update success!', life: 3000 })
+  }
+  catch (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: error })
+  }
+}
+
+wLog(dataSource, '====')
 </script>
 
 <template>
@@ -47,6 +82,8 @@ function openCatePage() {
     :rows="10"
     :rows-per-page-options="[5, 10, 20, 50]"
     class="w-full"
+    edit-mode="cell"
+    @cell-edit-complete="onCellEditComplete"
   >
     <template #header>
       <div class="flex justify-end gap-3">
@@ -59,10 +96,24 @@ function openCatePage() {
         No packages found
       </div>
     </template>
-    <Column field="name" header="Name" style="width: 25%" />
-    <Column field="description" header="Description" style="width: 25%" />
-    <Column field="reason" header="Reason" style="width: 25%" />
-    <Column column-key="operation" header="Operation" style="width: 25%">
+    <Column field="name" header="Name" class="min-w-40" />
+    <Column field="description" header="Description" class="min-w-40" />
+    <Column field="reason" header="Reason" class="min-w-40" />
+    <Column field="categories" header="Categories" class="min-w-40">
+      <template #body="{ data }">
+        <Tag v-for="cateId in data.categories" :key="cateId" ml-2>
+          {{ cateMap[cateId] }}
+        </Tag>
+      </template>
+      <template #editor="{ data, field }">
+        <HumanTreeSelect
+          v-model="data[field]"
+          :transform="Number"
+          :tree-props="{ options: cateTreeOptions, selectionMode: 'multiple' }"
+        />
+      </template>
+    </Column>
+    <Column column-key="operation" header="Operation" class="min-w-40" frozen>
       <template #body="{ data }">
         <a :href="data.link" target="_blank">
           <Button label="open" text class="px-2" />

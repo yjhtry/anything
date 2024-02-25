@@ -15,40 +15,18 @@ const {
   transform = v => v,
 } = defineProps<Props>()
 
-const _value = ref<any>()
-
 const isSubmitting = useIsSubmitting()
-const { value, handleChange, errorMessage } = useField<any>(() => name, undefined, {
+const { value, errorMessage } = useField<any>(() => name, undefined, {
   validateOnValueUpdate: false,
-})
-function onChange(checked: any) {
-  log(controlProps)
-  const mode = controlProps?.selectionMode || 'single'
-
-  const result = Object.keys(checked).map(transform)
-
-  handleChange(mode === 'single' ? result[0] : result)
-}
-
-watchEffect(() => {
-  const list = Array.isArray(value.value) ? value.value : value ? [value] : []
-
-  _value.value = list.reduce((acc: any, cur: any) => {
-    acc[cur] = true
-    return acc
-  }, {})
 })
 </script>
 
 <template>
   <FloatLabel>
-    <TreeSelect
-      v-bind="controlProps"
-      :model-value="_value"
-      class="w-full"
-      :disabled="isSubmitting"
-      :invalid="!!errorMessage"
-      @change="onChange"
+    <HumanTreeSelect
+      v-model="value"
+      :transform="transform"
+      :tree-props="{ ...controlProps, disabled: isSubmitting, invalid: !!errorMessage }"
     />
     <label>{{ label }}</label>
   </FloatLabel>

@@ -96,6 +96,7 @@ declare global {
   const resolveComponent: typeof import('vue')['resolveComponent']
   const resolveRef: typeof import('@vueuse/core')['resolveRef']
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
+  const retrieveCateTreeData: typeof import('./src/utils/retrieve')['retrieveCateTreeData']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
@@ -122,6 +123,7 @@ declare global {
   const until: typeof import('@vueuse/core')['until']
   const updateCategory: typeof import('./src/services/pkg')['updateCategory']
   const updatePackage: typeof import('./src/services/pkg')['updatePackage']
+  const updatePkgCates: typeof import('./src/services/pkg')['updatePkgCates']
   const useActiveElement: typeof import('@vueuse/core')['useActiveElement']
   const useAnimate: typeof import('@vueuse/core')['useAnimate']
   const useArrayDifference: typeof import('@vueuse/core')['useArrayDifference']
@@ -410,6 +412,7 @@ declare module 'vue' {
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
+    readonly retrieveCateTreeData: UnwrapRef<typeof import('./src/utils/retrieve')['retrieveCateTreeData']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
@@ -436,6 +439,7 @@ declare module 'vue' {
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly updateCategory: UnwrapRef<typeof import('./src/services/pkg')['updateCategory']>
     readonly updatePackage: UnwrapRef<typeof import('./src/services/pkg')['updatePackage']>
+    readonly updatePkgCates: UnwrapRef<typeof import('./src/services/pkg')['updatePkgCates']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>
@@ -716,6 +720,7 @@ declare module '@vue/runtime-core' {
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
+    readonly retrieveCateTreeData: UnwrapRef<typeof import('./src/utils/retrieve')['retrieveCateTreeData']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
@@ -742,6 +747,7 @@ declare module '@vue/runtime-core' {
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly updateCategory: UnwrapRef<typeof import('./src/services/pkg')['updateCategory']>
     readonly updatePackage: UnwrapRef<typeof import('./src/services/pkg')['updatePackage']>
+    readonly updatePkgCates: UnwrapRef<typeof import('./src/services/pkg')['updatePkgCates']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>

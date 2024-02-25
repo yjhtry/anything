@@ -20,6 +20,7 @@ fn main() {
             pkg::query_packages,
             pkg::add_package,
             pkg::update_package,
+            pkg::update_package_categories,
             pkg::delete_package,
             pkg::get_package_by_id,
             pkg::add_category,
