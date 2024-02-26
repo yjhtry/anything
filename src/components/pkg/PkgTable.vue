@@ -9,6 +9,7 @@ const { loading, dataSource, total } = defineProps<{
 
 const emit = defineEmits<{
   reload: []
+  pageChange: [{ page: number, page_size: number }]
 }>()
 
 const confirm = useConfirm()
@@ -87,6 +88,7 @@ async function onCellEditComplete(event: any) {
     :rows-per-page-options="[5, 10, 20, 50]"
     class="w-full"
     edit-mode="cell"
+    @page="emit('pageChange', { page: $event.page + 1, page_size: $event.rows })"
     @cell-edit-complete="onCellEditComplete"
   >
     <template #header>
@@ -101,8 +103,20 @@ async function onCellEditComplete(event: any) {
       </div>
     </template>
     <Column field="name" header="Name" class="min-w-40" />
-    <Column field="description" header="Description" class="min-w-40" />
-    <Column field="reason" header="Reason" class="min-w-40" />
+    <Column field="description" header="Description" class="min-w-40">
+      <template #body="{ data }">
+        <BtnView :btn-props="{ label: data.description, text: true }">
+          {{ data.description }}
+        </BtnView>
+      </template>
+    </Column>
+    <Column field="reason" header="Reason" class="min-w-40">
+      <template #body="{ data }">
+        <BtnView :btn-props="{ label: data.reason, text: true }">
+          {{ data.reason }}
+        </BtnView>
+      </template>
+    </Column>
     <Column field="categories" header="Categories" class="min-w-40">
       <template #body="{ data }">
         <Tag v-for="cateId in data.categories" :key="cateId" ml-2>

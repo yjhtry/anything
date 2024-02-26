@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BtnView: typeof import('./src/components/BtnView.vue')['default']
     Button: typeof import('primevue/button')['default']
     CateAddOrUpdateModal: typeof import('./src/components/category/CateAddOrUpdateModal.vue')['default']
     CateQuery: typeof import('./src/components/category/CateQuery.vue')['default']
@@ -17,7 +18,6 @@ declare module 'vue' {
     HumanTreeSelect: typeof import('./src/components/HumanTreeSelect.vue')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
     InputText: typeof import('primevue/inputtext')['default']
-    MultiSelect: typeof import('primevue/multiselect')['default']
     PkgAddOrUpdateModal: typeof import('./src/components/pkg/PkgAddOrUpdateModal.vue')['default']
     PkgQuery: typeof import('./src/components/pkg/PkgQuery.vue')['default']
     PkgTable: typeof import('./src/components/pkg/PkgTable.vue')['default']

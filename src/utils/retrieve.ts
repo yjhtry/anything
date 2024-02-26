@@ -29,3 +29,9 @@ export function retrieveCateTreeData(list: Category[]) {
 
   return result
 }
+
+export function ellipsisText(text: string, length: number) {
+  if (text.length <= length)
+    return text
+  return `${text.slice(0, length)}...`
+}

@@ -9,6 +9,7 @@ const { loading, dataSource, total } = defineProps<{
 
 const emit = defineEmits<{
   reload: []
+  pageChange: [{ page: number, page_size: number }]
 }>()
 const router = useRouter()
 const confirm = useConfirm()
@@ -53,6 +54,7 @@ function onBack() {
     :rows="10"
     :rows-per-page-options="[5, 10, 20, 50]"
     class="w-full"
+    @page="emit('pageChange', { page: $event.page + 1, page_size: $event.rows })"
   >
     <template #header>
       <div class="flex justify-end gap-3">

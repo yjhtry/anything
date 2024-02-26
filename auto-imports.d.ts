@@ -37,6 +37,7 @@ declare global {
   const deletePackage: typeof import('./src/services/pkg')['deletePackage']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
+  const ellipsisText: typeof import('./src/utils/retrieve')['ellipsisText']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const getCategories: typeof import('./src/services/pkg')['getCategories']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
@@ -353,6 +354,7 @@ declare module 'vue' {
     readonly deletePackage: UnwrapRef<typeof import('./src/services/pkg')['deletePackage']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly ellipsisText: UnwrapRef<typeof import('./src/utils/retrieve')['ellipsisText']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
@@ -661,6 +663,7 @@ declare module '@vue/runtime-core' {
     readonly deletePackage: UnwrapRef<typeof import('./src/services/pkg')['deletePackage']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly ellipsisText: UnwrapRef<typeof import('./src/utils/retrieve')['ellipsisText']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>

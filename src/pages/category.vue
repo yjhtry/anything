@@ -2,7 +2,7 @@
 import type { QueryCatesParams } from '~/services/pkg'
 
 const toast = useToast()
-const query = shallowRef<QueryCatesParams>({})
+const query = shallowRef<QueryCatesParams>({ page: 1, page_size: 10 })
 
 const { data, loading, error, reload } = useInvoke(getCategories, query)
 
@@ -10,7 +10,7 @@ const total = computed(() => data.value?.total || 0)
 const dataSource = computed(() => data.value?.data || [])
 
 function onSearch(data: QueryCatesParams) {
-  query.value = data
+  query.value = { ...query.value, ...data }
 }
 
 watchEffect(() => {
@@ -24,7 +24,13 @@ watchEffect(() => {
   <div class="mt-4 px-3">
     <div class="rounded-md border-none bg-[#18181b] p-2">
       <CateQuery class="mb-5" @search="onSearch" />
-      <CateTable :loading="loading" :total="total" :data-source="dataSource" @reload="reload" />
+      <CateTable
+        :loading="loading"
+        :total="total"
+        :data-source="dataSource"
+        @reload="reload"
+        @page-change="onSearch"
+      />
     </div>
   </div>
 </template>
