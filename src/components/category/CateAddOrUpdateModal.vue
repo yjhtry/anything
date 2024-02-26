@@ -36,11 +36,21 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     if (mode === 'add') {
       await addCategory({ ...values })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Add success!',
+        life: 3000,
+      })
     }
     else {
       await updateCategory({ ...values, id: row!.id })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Update success',
+        life: 3000,
+      })
     }
 
     emit('reload')
@@ -49,7 +59,12 @@ const onSubmit = handleSubmit(async (values) => {
   }
 
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error,
+      life: 5000,
+    })
   }
 })
 
@@ -60,9 +75,24 @@ watchEffect(() => {
 </script>
 
 <template>
-  <Button v-if="mode === 'add'" label="Add" @click="visible = true" />
-  <Button v-else label="edit" text class="px-2" @click="visible = true" />
-  <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
+  <Button
+    v-if="mode === 'add'"
+    label="Add"
+    @click="visible = true"
+  />
+  <Button
+    v-else
+    text
+    label="edit"
+    class="px-2"
+    @click="visible = true"
+  />
+  <Dialog
+    v-model:visible="visible"
+    modal
+    header="Edit Profile"
+    :style="{ width: '25rem' }"
+  >
     <div class="mt-8 space-y-8">
       <div class="align-items-center mb-3 flex gap-3">
         <TheInput name="name" label="Name" w-67 />
@@ -77,8 +107,17 @@ watchEffect(() => {
       </div>
     </div>
     <div class="mt-8 flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="onClose" />
-      <Button type="button" label="Save" @click="onSubmit" />
+      <Button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        @click="onClose"
+      />
+      <Button
+        type="button"
+        label="Save"
+        @click="onSubmit"
+      />
     </div>
   </Dialog>
 </template>

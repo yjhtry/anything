@@ -11,6 +11,9 @@ pub enum PkgError {
 
     #[error("Cannot delete has child category")]
     CannotDeleteHasChildCategory,
+
+    #[error("Cannot delete has relation category")]
+    CannotDeleteHasRelationCategory,
 }
 
 impl serde::Serialize for PkgError {
@@ -19,9 +22,7 @@ impl serde::Serialize for PkgError {
         S: serde::Serializer,
     {
         match self {
-            PkgError::DbError(e) => {
-                serializer.serialize_str(format!("DbError: {}", e.to_string()).as_str())
-            }
+            PkgError::DbError(e) => serializer.serialize_str(format!("DbError: {}", e).as_str()),
             e => serializer.serialize_str(e.to_string().as_str()),
         }
     }

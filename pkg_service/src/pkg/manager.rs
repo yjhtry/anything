@@ -227,8 +227,21 @@ impl Pkg for PackManager {
         &self,
         data: PackageCategoryAddReq,
     ) -> Result<PackageCategoryAddRes, PkgError> {
-        // add category to the database
+        // query parent category, if not exists, return error
+        if data.parent_id > 0 {
+            let res = sqlx::query!(
+                r#"SELECT id FROM package_categories WHERE id = $1"#,
+                data.parent_id
+            )
+            .fetch_one(&self.pool)
+            .await;
 
+            if res.is_err() {
+                return Err(PkgError::NotFoundCategory);
+            }
+        }
+
+        // add category to the database
         let res = sqlx::query!(
             r#"INSERT INTO package_categories (name, parent_id)
           VALUES ($1, $2)
@@ -275,6 +288,18 @@ impl Pkg for PackManager {
 
         if has_child > 0 {
             return Err(PkgError::CannotDeleteHasChildCategory);
+        }
+
+        // check if has relation
+        let has_relation: i64 =
+            sqlx::query("SELECT COUNT(*) FROM package_category_relations WHERE category_id = $1")
+                .bind(id)
+                .fetch_one(&self.pool)
+                .await?
+                .get(0);
+
+        if has_relation > 0 {
+            return Err(PkgError::CannotDeleteHasRelationCategory);
         }
 
         sqlx::query!(
@@ -343,21 +368,6 @@ impl Pkg for PackManager {
 mod test {
     use super::*;
     use crate::abi::types::PackageAddReq;
-
-    #[tokio::test]
-    async fn add_category_should_word() {
-        let pool = get_test_sqlite_pool().await;
-
-        let pk = PackManager::new(pool);
-        let data = PackageCategoryAddReq {
-            name: "test".to_string(),
-            parent_id: 1,
-        };
-
-        let res = pk.add_category(data).await.unwrap();
-
-        assert_eq!(res.id, 1);
-    }
 
     #[tokio::test]
     async fn add_package_should_word() {
@@ -563,10 +573,53 @@ mod test {
     }
 
     #[tokio::test]
+    async fn query_packages_pagination_should_work() {
+        let pool = get_test_sqlite_pool().await;
+
+        let pkg = PackManager::new(pool.clone());
+
+        for _ in 0..10 {
+            add_package(
+                &pkg,
+                PackageAddReq {
+                    name: get_rand_name(6),
+                    description: "test".to_string(),
+                    reason: "test".to_string(),
+                    link: "test".to_string(),
+                    categories: Some(vec![1, 2]),
+                },
+            )
+            .await;
+        }
+
+        let res = pkg
+            .query_packages(PackageQueryReq {
+                name: "".to_string(),
+                description: "".to_string(),
+                categories: vec![],
+                reason: "".to_string(),
+                page: 2,
+                page_size: 5,
+            })
+            .await
+            .unwrap();
+
+        assert_eq!(res.total, 10);
+        assert_eq!(res.data.len(), 5);
+    }
+
+    #[tokio::test]
     async fn add_category_should_work() {
         let pool = get_test_sqlite_pool().await;
 
         let pkg = PackManager::new(pool.clone());
+
+        pkg.add_category(PackageCategoryAddReq {
+            name: "test".to_string(),
+            parent_id: 0,
+        })
+        .await
+        .unwrap();
 
         let res = pkg
             .add_category(PackageCategoryAddReq {
@@ -576,7 +629,7 @@ mod test {
             .await
             .unwrap();
 
-        assert_eq!(res.id, 1);
+        assert_eq!(res.id, 2);
     }
 
     #[tokio::test]
@@ -588,7 +641,7 @@ mod test {
         let res = pkg
             .add_category(PackageCategoryAddReq {
                 name: "test".to_string(),
-                parent_id: 1,
+                parent_id: 0,
             })
             .await
             .unwrap();
@@ -599,7 +652,7 @@ mod test {
             .update_category(PackageCategoryUpdateReq {
                 id: 1,
                 name: "test2".to_string(),
-                parent_id: 1,
+                parent_id: 0,
             })
             .await
             .unwrap();
@@ -616,7 +669,7 @@ mod test {
         let res = pkg
             .add_category(PackageCategoryAddReq {
                 name: "test".to_string(),
-                parent_id: 1,
+                parent_id: 0,
             })
             .await
             .unwrap();
@@ -639,6 +692,67 @@ mod test {
     }
 
     #[tokio::test]
+    async fn delete_category_when_has_child_should_work() {
+        let pool = get_test_sqlite_pool().await;
+
+        let pkg = PackManager::new(pool.clone());
+
+        let res = pkg
+            .add_category(PackageCategoryAddReq {
+                name: "test".to_string(),
+                parent_id: 0,
+            })
+            .await
+            .unwrap();
+
+        assert_eq!(res.id, 1);
+
+        pkg.add_category(PackageCategoryAddReq {
+            name: "test2".to_string(),
+            parent_id: 1,
+        })
+        .await
+        .unwrap();
+
+        let res = pkg.delete_category(1).await;
+
+        assert!(res.is_err());
+    }
+
+    #[tokio::test]
+    async fn delete_category_when_has_relation_should_work() {
+        let pool = get_test_sqlite_pool().await;
+
+        let pkg = PackManager::new(pool.clone());
+
+        let res = pkg
+            .add_category(PackageCategoryAddReq {
+                name: "test".to_string(),
+                parent_id: 0,
+            })
+            .await
+            .unwrap();
+
+        assert_eq!(res.id, 1);
+
+        add_package(
+            &pkg,
+            PackageAddReq {
+                name: "test".to_string(),
+                description: "test".to_string(),
+                reason: "test".to_string(),
+                link: "test".to_string(),
+                categories: Some(vec![1]),
+            },
+        )
+        .await;
+
+        let res = pkg.delete_category(1).await;
+
+        assert!(res.is_err());
+    }
+
+    #[tokio::test]
     async fn query_categories_should_work() {
         let pool = get_test_sqlite_pool().await;
 
@@ -646,14 +760,14 @@ mod test {
 
         pkg.add_category(PackageCategoryAddReq {
             name: "test".to_string(),
-            parent_id: 1,
+            parent_id: 0,
         })
         .await
         .unwrap();
 
         pkg.add_category(PackageCategoryAddReq {
             name: "test2".to_string(),
-            parent_id: 1,
+            parent_id: 0,
         })
         .await
         .unwrap();
@@ -687,6 +801,35 @@ mod test {
             .unwrap();
 
         assert_eq!(res.total, 0);
+    }
+
+    #[tokio::test]
+    async fn query_categories_pagination_should_work() {
+        let pool = get_test_sqlite_pool().await;
+
+        let pkg = PackManager::new(pool.clone());
+
+        for _ in 0..10 {
+            pkg.add_category(PackageCategoryAddReq {
+                name: get_rand_name(6),
+                parent_id: 0,
+            })
+            .await
+            .unwrap();
+        }
+
+        let res = pkg
+            .query_categories(PackageCategoryQueryReq {
+                name: "".to_string(),
+                parent_id: None,
+                page: 2,
+                page_size: 5,
+            })
+            .await
+            .unwrap();
+
+        assert_eq!(res.total, 10);
+        assert_eq!(res.data.len(), 5);
     }
 
     #[tokio::test]
@@ -724,11 +867,11 @@ mod test {
             vec![
                 PackageCategoryAddReq {
                     name: get_rand_name(6),
-                    parent_id: 1,
+                    parent_id: 0,
                 },
                 PackageCategoryAddReq {
                     name: get_rand_name(6),
-                    parent_id: 1,
+                    parent_id: 0,
                 },
             ],
         )

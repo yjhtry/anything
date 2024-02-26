@@ -8,6 +8,7 @@ pub use relation::*;
 
 use sqlx::{sqlite::SqliteRow, FromRow, Row};
 
+/// Query as Package
 impl FromRow<'_, SqliteRow> for Package {
     fn from_row(row: &SqliteRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time
@@ -47,6 +48,7 @@ impl FromRow<'_, SqliteRow> for Package {
     }
 }
 
+/// Query as PackageCategory
 impl FromRow<'_, SqliteRow> for PackageCategory {
     fn from_row(row: &SqliteRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time
@@ -71,6 +73,7 @@ impl FromRow<'_, SqliteRow> for PackageCategory {
     }
 }
 
+/// Query as PackageCategoryRelation
 impl FromRow<'_, SqliteRow> for PackageCategoryRelation {
     fn from_row(row: &SqliteRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time

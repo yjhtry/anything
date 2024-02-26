@@ -30,10 +30,20 @@ function onDelete(event: any, id: number) {
 
         emit('reload')
 
-        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted', life: 3000 })
+        toast.add({
+          severity: 'success',
+          summary: 'Confirmed',
+          detail: 'Record deleted',
+          life: 3000,
+        })
       }
       catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+          life: 5000,
+        })
       }
     },
   })

@@ -15,7 +15,12 @@ const onSubmit = handleSubmit(async (values) => {
     emit('search', values)
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error,
+      life: 5000,
+    })
   }
 })
 
@@ -33,7 +38,11 @@ function onReset() {
         <TheNumber name="parent_id" label="ParentId" class="inline-block w-67" />
       </div>
       <div class="mt-4 flex justify-end gap-4">
-        <Button severity="secondary" :loading="isSubmitting" @click="onReset">
+        <Button
+          severity="secondary"
+          :loading="isSubmitting"
+          @click="onReset"
+        >
           Reset
         </Button>
         <Button type="submit" :loading="isSubmitting">

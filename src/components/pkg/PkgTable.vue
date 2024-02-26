@@ -48,10 +48,20 @@ function onDelete(event: any, id: number) {
       try {
         await deletePackage(id)
         emit('reload')
-        toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Record deleted', life: 3000 })
+        toast.add({
+          severity: 'success',
+          summary: 'Confirmed',
+          detail: 'Record deleted',
+          life: 3000,
+        })
       }
       catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete record', life: 5000 })
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete record',
+          life: 5000,
+        })
       }
     },
   })
@@ -80,14 +90,15 @@ async function onCellEditComplete(event: any) {
 <template>
   <ConfirmPopup />
   <DataTable
-    paginator
+
+    paginator scrollable
     data-key="id"
     :loading="loading"
     :value="dataSource"
     :total-records="total"
     :rows="10"
     :rows-per-page-options="[5, 10, 20, 50]"
-    class="w-full"
+    class="text-3"
     edit-mode="cell"
     @page="emit('pageChange', { page: $event.page + 1, page_size: $event.rows })"
     @cell-edit-complete="onCellEditComplete"
@@ -103,22 +114,22 @@ async function onCellEditComplete(event: any) {
         No packages found
       </div>
     </template>
-    <Column field="name" header="Name" class="min-w-40" />
-    <Column field="description" header="Description" class="min-w-40">
+    <Column field="name" header="Name" class="min-w-60" />
+    <Column field="description" header="Description" class="min-w-80">
       <template #body="{ data }">
         <BtnView :btn-props="{ label: data.description, text: true }">
           {{ data.description }}
         </BtnView>
       </template>
     </Column>
-    <Column field="reason" header="Reason" class="min-w-40">
+    <Column field="reason" header="Reason" class="min-w-80">
       <template #body="{ data }">
         <BtnView :btn-props="{ label: data.reason, text: true }">
           {{ data.reason }}
         </BtnView>
       </template>
     </Column>
-    <Column field="categories" header="Categories" class="min-w-40">
+    <Column field="categories" header="Categories" class="min-w-60">
       <template #body="{ data }">
         <Tag v-for="cateId in data.categories" :key="cateId" ml-2>
           {{ cateMap[cateId] }}
@@ -132,7 +143,13 @@ async function onCellEditComplete(event: any) {
         />
       </template>
     </Column>
-    <Column column-key="operation" header="Operation" class="min-w-40" frozen>
+    <Column
+      column-key="operation"
+      header="Operation"
+      class="min-w-60"
+      frozen
+      align-frozen="right"
+    >
       <template #body="{ data }">
         <a :href="data.link" target="_blank">
           <Button label="open" text class="px-2" />

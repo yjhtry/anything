@@ -39,11 +39,21 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     if (mode === 'add') {
       await addPackage({ ...values })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Add success!', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Add success!',
+        life: 3000,
+      })
     }
     else {
       await updatePackage({ ...values, id: row!.id })
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Update success!', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Update success!',
+        life: 3000,
+      })
     }
 
     emit('reload')
@@ -52,7 +62,12 @@ const onSubmit = handleSubmit(async (values) => {
   }
 
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error,
+      life: 5000,
+    })
   }
 })
 

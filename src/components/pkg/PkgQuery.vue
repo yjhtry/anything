@@ -18,7 +18,12 @@ const onSubmit = handleSubmit(async (values) => {
     emit('search', values)
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error,
+      life: 5000,
+    })
   }
 })
 
