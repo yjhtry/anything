@@ -65,23 +65,32 @@ watchEffect(() => {
 <template>
   <Button v-if="mode === 'add'" label="Add" @click="visible = true" />
   <Button v-else label="edit" text class="px-2" @click="visible = true" />
-  <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
+  <Dialog v-model:visible="visible" modal header="Edit Profile" w-120>
     <div class="mt-8 space-y-8">
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="name" label="Name" w-67 />
+        <TheInput name="name" label="Name" w-100 />
       </div>
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="description" label="Description" w-67 />
+        <TheTextarea
+          name="description" label="Description" w-100
+          :control-props="{ autoResize: true, rows: 3 }"
+        />
       </div>
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="reason" label="Reason" w-67 />
+        <TheTextarea
+          name="reason" label="Reason" w-100
+          :control-props="{ autocomplete: 'false', autoResize: true, rows: 3 }"
+        />
       </div>
       <div class="align-items-center mb-3 flex gap-3">
-        <TheInput name="link" label="Link" w-67 :control-props="{ autocomplete: 'false' }" />
+        <TheInput
+          name="link" label="Link" w-100
+          :control-props="{ autocomplete: 'false' }"
+        />
       </div>
       <div v-if="mode === 'add'" class="align-items-center mb-3 flex gap-3">
         <TheTreeSelect
-          w-67
+          w-100
           name="categories" label="Categories"
           :transform="Number"
           :control-props="{ options: catesOptions, selectionMode: 'multiple' }"

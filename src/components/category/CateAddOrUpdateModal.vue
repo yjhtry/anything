@@ -33,7 +33,6 @@ function onClose() {
 }
 
 const onSubmit = handleSubmit(async (values) => {
-  log(values, 'values')
   try {
     if (mode === 'add') {
       await addCategory({ ...values })

@@ -24,10 +24,12 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tag: typeof import('primevue/tag')['default']
+    Textarea: typeof import('primevue/textarea')['default']
     TheInput: typeof import('./src/components/form/TheInput.vue')['default']
     TheNav: typeof import('./src/components/TheNav.vue')['default']
     TheNumber: typeof import('./src/components/form/TheNumber.vue')['default']
     TheSelect: typeof import('./src/components/form/TheSelect.vue')['default']
+    TheTextarea: typeof import('./src/components/form/TheTextarea.vue')['default']
     TheTreeSelect: typeof import('./src/components/form/TheTreeSelect.vue')['default']
     TreeSelect: typeof import('primevue/treeselect')['default']
   }

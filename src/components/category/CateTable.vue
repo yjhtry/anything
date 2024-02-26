@@ -48,6 +48,7 @@ function onBack() {
   <ConfirmPopup />
   <DataTable
     paginator
+    data-key="id"
     :loading="loading"
     :value="dataSource"
     :total-records="total"

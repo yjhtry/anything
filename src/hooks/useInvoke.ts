@@ -10,10 +10,10 @@ export function useInvoke<T, U = any>(api: MaybeRef<Apis> | Callable<T>, params?
   const error = ref('')
 
   const toFetch = () => {
-    const payload = toValue(params)
-
     loading.value = true
+
     let result: Promise<T>
+    const payload = toValue(params)
 
     if (typeof api === 'function')
       result = api(payload)
