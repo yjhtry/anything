@@ -1,13 +1,17 @@
 mod manager;
 
-use crate::abi::{
-    types::{
-        Package, PackageAddReq, PackageAddRes, PackageCategoryAddReq, PackageCategoryAddRes,
-        PackageCategoryQueryReq, PackageCategoryQueryRes, PackageCategoryRelation,
-        PackageCategoryUpdateReq, PackageCategoryUpdateRes, PackageQueryReq, PackageQueryRes,
-        PackageUpdateCategoriesReq, PackageUpdateCategoriesRes, PackageUpdateReq, PackageUpdateRes,
+use crate::{
+    abi::{
+        types::{
+            Package, PackageAddReq, PackageAddRes, PackageCategoryAddReq, PackageCategoryAddRes,
+            PackageCategoryQueryReq, PackageCategoryQueryRes, PackageCategoryRelation,
+            PackageCategoryUpdateReq, PackageCategoryUpdateRes, PackageQueryReq, PackageQueryRes,
+            PackageUpdateCategoriesReq, PackageUpdateCategoriesRes, PackageUpdateReq,
+            PackageUpdateRes,
+        },
+        PkgError,
     },
-    PkgError,
+    types::PackageCategory,
 };
 
 #[allow(async_fn_in_trait)]
@@ -59,4 +63,21 @@ pub trait Pkg {
         &self,
         id: i64,
     ) -> Result<Vec<PackageCategoryRelation>, PkgError>;
+}
+
+/// Database sync trait
+#[allow(async_fn_in_trait)]
+pub trait DbSync<T: PkgSync> {
+    async fn sync(&self, other_manager: T) -> Result<(), PkgError>;
+}
+
+#[allow(async_fn_in_trait)]
+pub trait PkgSync {
+    /// Add a package to the database
+    async fn sync_packages(&self, data: Package) -> Result<(), PkgError>;
+    async fn sync_package_categories(&self, data: PackageCategory) -> Result<(), PkgError>;
+    async fn sync_package_category_relations(
+        &self,
+        data: PackageCategoryRelation,
+    ) -> Result<(), PkgError>;
 }

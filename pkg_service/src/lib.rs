@@ -3,14 +3,14 @@ mod pkg;
 
 pub use abi::{types, PkgError};
 pub use pkg::Pkg;
-use sqlx::sqlite::SqlitePool;
+use sqlx::{Database, Pool};
 
-pub struct PackManager {
-    pool: SqlitePool,
+pub struct PackManager<T: Database> {
+    pool: Pool<T>,
 }
 
-impl PackManager {
-    pub fn new(pool: SqlitePool) -> Self {
+impl<T: Database> PackManager<T> {
+    pub fn new(pool: Pool<T>) -> Self {
         Self { pool }
     }
 }

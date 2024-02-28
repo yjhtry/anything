@@ -1,8 +1,8 @@
-use sqlx::Row;
+use sqlx::{Postgres, Row, Sqlite};
 
-use crate::{abi::get_valid_pagination, PackManager};
+use crate::{abi::get_valid_pagination, types::PackageCategory, PackManager};
 
-use super::Pkg;
+use super::{DbSync, Pkg, PkgSync};
 
 use crate::abi::{
     types::{
@@ -14,7 +14,7 @@ use crate::abi::{
     PkgError,
 };
 
-impl Pkg for PackManager {
+impl Pkg for PackManager<Sqlite> {
     async fn add_package(&self, data: PackageAddReq) -> Result<PackageAddRes, PkgError> {
         let mut tx = self.pool.begin().await?;
 
@@ -361,6 +361,29 @@ impl Pkg for PackManager {
         .await?;
 
         Ok(res)
+    }
+}
+
+impl PkgSync for PackManager<Postgres> {
+    async fn sync_packages(&self, _data: Package) -> Result<(), PkgError> {
+        todo!()
+    }
+
+    async fn sync_package_categories(&self, _data: PackageCategory) -> Result<(), PkgError> {
+        todo!()
+    }
+
+    async fn sync_package_category_relations(
+        &self,
+        _data: PackageCategoryRelation,
+    ) -> Result<(), PkgError> {
+        todo!()
+    }
+}
+
+impl DbSync<PackManager<Postgres>> for PackManager<Sqlite> {
+    async fn sync(&self, _other_manager: PackManager<Postgres>) -> Result<(), PkgError> {
+        todo!()
     }
 }
 
@@ -855,13 +878,13 @@ mod test {
         assert_eq!(res.len(), 2);
     }
 
-    async fn add_categories(pkg: &PackManager, data: Vec<PackageCategoryAddReq>) {
+    async fn add_categories(pkg: &PackManager<Sqlite>, data: Vec<PackageCategoryAddReq>) {
         for d in data {
             pkg.add_category(d).await.unwrap();
         }
     }
 
-    async fn add_package(pkg: &PackManager, data: PackageAddReq) -> PackageAddRes {
+    async fn add_package(pkg: &PackManager<Sqlite>, data: PackageAddReq) -> PackageAddRes {
         add_categories(
             &pkg,
             vec![
