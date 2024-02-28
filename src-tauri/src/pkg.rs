@@ -5,8 +5,9 @@ use pkg_service::{
         PackageCategoryUpdateRes, PackageQueryReq, PackageQueryRes, PackageUpdateCategoriesReq,
         PackageUpdateCategoriesRes, PackageUpdateReq, PackageUpdateRes,
     },
-    PackManager, Pkg, PkgError,
+    DbSync, PackManager, Pkg, PkgError,
 };
+use sqlx::PgPool;
 use tauri::State;
 
 #[tauri::command]
@@ -101,4 +102,12 @@ pub async fn update_category(
     let pack_manager = state.inner();
 
     pack_manager.update_category(data).await
+}
+
+#[tauri::command]
+pub async fn sync_data_to_postgres(state: State<'_, PackManager>) -> Result<(), PkgError> {
+    let pack_manager = state.inner();
+    let pg_pool = PgPool::connect("postgresql://yjhtry:njM2wsgo7eKr@ep-wispy-waterfall-a5nitd81-pooler.us-east-2.aws.neon.tech/anything?sslmode=require").await?;
+    let pg_manager = PackManager::new(pg_pool);
+    pack_manager.sync(pg_manager).await
 }

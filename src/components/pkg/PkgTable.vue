@@ -71,6 +71,12 @@ function openCatePage() {
   router.push('/category')
 }
 
+async function syncLocalData2Pg() {
+  const res = await invoke('sync_data_to_postgres', {})
+
+  log(res)
+}
+
 async function onCellEditComplete(event: any) {
   try {
     const { data, newValue } = event
@@ -91,7 +97,7 @@ async function onCellEditComplete(event: any) {
   <ConfirmPopup />
   <DataTable
 
-    paginator scrollable
+    scrollable paginator
     data-key="id"
     :loading="loading"
     :value="dataSource"
@@ -105,6 +111,7 @@ async function onCellEditComplete(event: any) {
   >
     <template #header>
       <div class="flex justify-end gap-3">
+        <Button label="Sync" @click="syncLocalData2Pg" />
         <Button label="Category" severity="secondary" @click="openCatePage" />
         <PkgAddOrUpdateModal @reload="emit('reload')" />
       </div>

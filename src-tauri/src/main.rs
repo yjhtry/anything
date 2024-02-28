@@ -27,6 +27,7 @@ fn main() {
             pkg::query_categories,
             pkg::delete_category,
             pkg::update_category,
+            pkg::sync_data_to_postgres
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -74,10 +74,10 @@ pub trait DbSync<T: PkgSync> {
 #[allow(async_fn_in_trait)]
 pub trait PkgSync {
     /// Add a package to the database
-    async fn sync_packages(&self, data: Package) -> Result<(), PkgError>;
-    async fn sync_package_categories(&self, data: PackageCategory) -> Result<(), PkgError>;
+    async fn sync_packages(&self, data: Vec<Package>) -> Result<(), PkgError>;
+    async fn sync_package_categories(&self, data: Vec<PackageCategory>) -> Result<(), PkgError>;
     async fn sync_package_category_relations(
         &self,
-        data: PackageCategoryRelation,
+        data: Vec<PackageCategoryRelation>,
     ) -> Result<(), PkgError>;
 }

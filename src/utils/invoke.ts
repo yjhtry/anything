@@ -10,6 +10,7 @@ export type Apis = 'add_package'
   | 'update_category'
   | 'delete_category'
   | 'query_categories'
+  | 'sync_data_to_postgres'
 
 export function invoke<T>(api: Apis, data: any) {
   return _invoke<T>(api, data)

@@ -14,6 +14,9 @@ pub enum PkgError {
 
     #[error("Cannot delete has relation category")]
     CannotDeleteHasRelationCategory,
+
+    #[error("Database sync error: {0}")]
+    DBSyncError(#[from] tokio::task::JoinError),
 }
 
 impl serde::Serialize for PkgError {

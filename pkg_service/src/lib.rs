@@ -2,10 +2,10 @@ mod abi;
 mod pkg;
 
 pub use abi::{types, PkgError};
-pub use pkg::Pkg;
-use sqlx::{Database, Pool};
+pub use pkg::{DbSync, Pkg};
+use sqlx::{Database, Pool, Sqlite};
 
-pub struct PackManager<T: Database> {
+pub struct PackManager<T: Database = Sqlite> {
     pool: Pool<T>,
 }
 
