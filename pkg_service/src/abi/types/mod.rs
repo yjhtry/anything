@@ -3,6 +3,7 @@ mod package;
 mod relation;
 
 pub use category::*;
+use chrono::NaiveDateTime;
 pub use package::*;
 pub use relation::*;
 
@@ -41,6 +42,34 @@ impl FromRow<'_, SqliteRow> for Package {
             description,
             link,
             categories,
+            reason,
+            created_at,
+            updated_at,
+        })
+    }
+}
+
+impl FromRow<'_, SqliteRow> for PackageWithOutCategories {
+    fn from_row(row: &SqliteRow) -> Result<Self, sqlx::Error> {
+        // in real word, reservation must have a start time
+        let id = row.get("id");
+
+        if id == 0 {
+            return Err(sqlx::Error::RowNotFound);
+        }
+
+        let name = row.get("name");
+        let description = row.get("description");
+        let link = row.get("link");
+        let reason = row.get("reason");
+        let created_at = row.get("created_at");
+        let updated_at = row.get("updated_at");
+
+        Ok(Self {
+            id,
+            name,
+            description,
+            link,
             reason,
             created_at,
             updated_at,
@@ -99,7 +128,7 @@ impl FromRow<'_, SqliteRow> for PackageCategoryRelation {
 }
 
 /// Query as Package
-impl FromRow<'_, PgRow> for Package {
+impl FromRow<'_, PgRow> for PackageIdAndUpdatedAt {
     fn from_row(row: &PgRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time
         let id = row.get("id");
@@ -108,38 +137,17 @@ impl FromRow<'_, PgRow> for Package {
             return Err(sqlx::Error::RowNotFound);
         }
 
-        let name = row.get("name");
-        let description = row.get("description");
-        let link = row.get("link");
-        let category_ids: String = row.get("category_ids");
-        let reason = row.get("reason");
-        let created_at = row.get("created_at");
-        let updated_at = row.get("updated_at");
-
-        let categories = if category_ids.is_empty() {
-            vec![]
-        } else {
-            category_ids
-                .split(',')
-                .map(|v| v.parse::<i64>().unwrap())
-                .collect()
-        };
+        let updated_at: NaiveDateTime = row.get("updated_at");
 
         Ok(Self {
             id,
-            name,
-            description,
-            link,
-            categories,
-            reason,
-            created_at,
-            updated_at,
+            updated_at: updated_at.to_string(),
         })
     }
 }
 
 /// Query as PackageCategory
-impl FromRow<'_, PgRow> for PackageCategory {
+impl FromRow<'_, PgRow> for PkgCategoryIdAndUpdatedAt {
     fn from_row(row: &PgRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time
         let id = row.get("id");
@@ -148,23 +156,17 @@ impl FromRow<'_, PgRow> for PackageCategory {
             return Err(sqlx::Error::RowNotFound);
         }
 
-        let name = row.get("name");
-        let parent_id = row.get("parent_id");
-        let created_at = row.get("created_at");
-        let updated_at = row.get("updated_at");
+        let updated_at: NaiveDateTime = row.get("updated_at");
 
         Ok(Self {
             id,
-            name,
-            parent_id,
-            created_at,
-            updated_at,
+            updated_at: updated_at.to_string(),
         })
     }
 }
 
 /// Query as PackageCategoryRelation
-impl FromRow<'_, PgRow> for PackageCategoryRelation {
+impl FromRow<'_, PgRow> for PkgCateRelIdAndUpdatedAt {
     fn from_row(row: &PgRow) -> Result<Self, sqlx::Error> {
         // in real word, reservation must have a start time
         let id = row.get("id");
@@ -173,17 +175,11 @@ impl FromRow<'_, PgRow> for PackageCategoryRelation {
             return Err(sqlx::Error::RowNotFound);
         }
 
-        let package_id = row.get("package_id");
-        let category_id = row.get("category_id");
-        let created_at = row.get("created_at");
-        let updated_at = row.get("updated_at");
+        let updated_at: NaiveDateTime = row.get("updated_at");
 
         Ok(Self {
             id,
-            package_id,
-            category_id,
-            created_at,
-            updated_at,
+            updated_at: updated_at.to_string(),
         })
     }
 }

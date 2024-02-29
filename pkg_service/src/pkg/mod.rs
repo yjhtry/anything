@@ -11,7 +11,7 @@ use crate::{
         },
         PkgError,
     },
-    types::PackageCategory,
+    types::{PackageCategory, PackageWithOutCategories},
 };
 
 #[allow(async_fn_in_trait)]
@@ -74,7 +74,7 @@ pub trait DbSync<T: PkgSync> {
 #[allow(async_fn_in_trait)]
 pub trait PkgSync {
     /// Add a package to the database
-    async fn sync_packages(&self, data: Vec<Package>) -> Result<(), PkgError>;
+    async fn sync_packages(&self, data: Vec<PackageWithOutCategories>) -> Result<(), PkgError>;
     async fn sync_package_categories(&self, data: Vec<PackageCategory>) -> Result<(), PkgError>;
     async fn sync_package_category_relations(
         &self,

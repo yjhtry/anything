@@ -72,9 +72,14 @@ function openCatePage() {
 }
 
 async function syncLocalData2Pg() {
-  const res = await invoke('sync_data_to_postgres', {})
+  try {
+    await invoke('sync_data_to_postgres', {})
 
-  log(res)
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Sync success!', life: 3000 })
+  }
+  catch (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+  }
 }
 
 async function onCellEditComplete(event: any) {

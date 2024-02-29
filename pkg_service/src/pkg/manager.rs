@@ -1,6 +1,13 @@
 use sqlx::{Postgres, Row, Sqlite};
 
-use crate::{abi::get_valid_pagination, types::PackageCategory, PackManager};
+use crate::{
+    abi::get_valid_pagination,
+    types::{
+        PackageCategory, PackageIdAndUpdatedAt, PackageWithOutCategories, PkgCateRelIdAndUpdatedAt,
+        PkgCategoryIdAndUpdatedAt,
+    },
+    PackManager,
+};
 
 use super::{DbSync, Pkg, PkgSync};
 
@@ -365,10 +372,11 @@ impl Pkg for PackManager<Sqlite> {
 }
 
 impl PkgSync for PackManager<Postgres> {
-    async fn sync_packages(&self, data: Vec<Package>) -> Result<(), PkgError> {
-        let remote_data: Vec<Package> = sqlx::query_as("SELECT id, updated_at FROM packages")
-            .fetch_all(&self.pool)
-            .await?;
+    async fn sync_packages(&self, data: Vec<PackageWithOutCategories>) -> Result<(), PkgError> {
+        let remote_data: Vec<PackageIdAndUpdatedAt> =
+            sqlx::query_as("SELECT id, updated_at FROM packages")
+                .fetch_all(&self.pool)
+                .await?;
 
         // compare local and remote data find out which need to be added, updated and deleted
         let mut add_data = vec![];
@@ -413,7 +421,7 @@ impl PkgSync for PackManager<Postgres> {
 
         if !add_data.is_empty() {
             let mut query =
-                "INSERT INTO packages (id, name, description, reason, link) VALUES ".to_string();
+                "INSERT INTO packages (id, name, description, reason, link, created_at, updated_at) VALUES ".to_string();
             let values = add_data
                 .iter()
                 .map(|v| {
@@ -450,7 +458,7 @@ impl PkgSync for PackManager<Postgres> {
     }
 
     async fn sync_package_categories(&self, data: Vec<PackageCategory>) -> Result<(), PkgError> {
-        let remote_data: Vec<PackageCategory> =
+        let remote_data: Vec<PkgCategoryIdAndUpdatedAt> =
             sqlx::query_as("SELECT id, updated_at FROM package_categories")
                 .fetch_all(&self.pool)
                 .await?;
@@ -498,7 +506,7 @@ impl PkgSync for PackManager<Postgres> {
 
         if !add_data.is_empty() {
             let mut query =
-                "INSERT INTO package_categories (id, name, parent_id) VALUES ".to_string();
+                "INSERT INTO package_categories (id, name, parent_id, created_at, updated_at) VALUES ".to_string();
             let values = add_data
                 .iter()
                 .map(|v| {
@@ -537,7 +545,7 @@ impl PkgSync for PackManager<Postgres> {
         &self,
         data: Vec<PackageCategoryRelation>,
     ) -> Result<(), PkgError> {
-        let remote_data: Vec<PackageCategoryRelation> =
+        let remote_data: Vec<PkgCateRelIdAndUpdatedAt> =
             sqlx::query_as("SELECT * FROM package_category_relations")
                 .fetch_all(&self.pool)
                 .await?;
@@ -585,7 +593,7 @@ impl PkgSync for PackManager<Postgres> {
 
         if !add_data.is_empty() {
             let mut query =
-                "INSERT INTO package_category_relations (id, package_id, category_id) VALUES "
+                "INSERT INTO package_category_relations (id, package_id, category_id, created_at, updated_at) VALUES "
                     .to_string();
             let values = add_data
                 .iter()

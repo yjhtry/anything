@@ -15,6 +15,23 @@ pub struct Package {
     pub updated_at: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PackageWithOutCategories {
+    pub id: i64,
+    pub name: String,
+    pub description: String,
+    pub link: String,
+    pub reason: String,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PackageIdAndUpdatedAt {
+    pub id: i64,
+    pub updated_at: String,
+}
+
 /// Package add request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageAddReq {

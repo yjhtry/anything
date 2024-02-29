@@ -12,6 +12,12 @@ pub struct PackageCategory {
     pub updated_at: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PkgCategoryIdAndUpdatedAt {
+    pub id: i64,
+    pub updated_at: String,
+}
+
 /// Package category add request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryAddReq {

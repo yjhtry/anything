@@ -10,6 +10,12 @@ pub struct PackageCategoryRelation {
     pub updated_at: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PkgCateRelIdAndUpdatedAt {
+    pub id: i64,
+    pub updated_at: String,
+}
+
 /// Package category relation create request
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageCategoryRelationAddReq {
