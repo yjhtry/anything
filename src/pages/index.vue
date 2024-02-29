@@ -26,7 +26,7 @@ watchEffect(() => {
 <template>
   <Toast position="top-right" />
   <div class="mt-4 px-3">
-    <div class="rounded-md border-none bg-[#18181b] p-2">
+    <div class="border-1 border-[#e2e8f0] rounded-md border-solid bg-white p-2 dark:border-transparent dark:bg-[#18181b]">
       <PkgQuery class="mb-5" @search="onSearch" />
       <PkgTable :loading="loading" :total="total" :data-source="dataSource" @page-change="onSearch" @reload="reload" />
     </div>

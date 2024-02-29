@@ -1,5 +1,7 @@
 <template>
-  <nav text-xl class="nav flex px-6 py-3">
+  <nav
+    text-xl class="nav flex border-b-1 border-b-[#e2e8f0] border-b-solid bg-white px-6 py-3 dark:border-b-[#27272a] dark:bg-[rgb(24,_24,_27)]"
+  >
     <div mr-auto text="4" font-700>
       Anything
     </div>
@@ -27,8 +29,6 @@
   top: 0;
   z-index: 1100;
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid #27272a;
-  background-color: rgba(0, 0, 0, 0.3);
   width: calc(100% - var(--scrollbar-width, 0px));
   transition:
     background-color 0.5s,

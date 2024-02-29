@@ -22,7 +22,7 @@ watchEffect(() => {
 <template>
   <Toast position="top-right" />
   <div class="mt-4 px-3">
-    <div class="rounded-md border-none bg-[#18181b] p-2">
+    <div border="~ ##e2e8f0 dark:transparent" class="rounded-md bg-white p-2 dark:bg-[#18181b]">
       <CateQuery class="mb-5" @search="onSearch" />
       <CateTable
         :loading="loading"
