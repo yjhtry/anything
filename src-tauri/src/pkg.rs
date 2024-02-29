@@ -107,7 +107,7 @@ pub async fn update_category(
 #[tauri::command]
 pub async fn sync_data_to_postgres(state: State<'_, PackManager>) -> Result<(), PkgError> {
     let pack_manager = state.inner();
-    let pg_pool = PgPool::connect("postgresql://yjhtry:njM2wsgo7eKr@ep-wispy-waterfall-a5nitd81-pooler.us-east-2.aws.neon.tech/anything?sslmode=require").await?;
+    let pg_pool = PgPool::connect(std::env::var("POSTGRESQL_URL")?.as_str()).await?;
     let pg_manager = PackManager::new(pg_pool);
     pack_manager.sync(pg_manager).await
 }

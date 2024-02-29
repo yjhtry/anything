@@ -1,3 +1,5 @@
+use std::env::VarError;
+
 #[derive(Debug, thiserror::Error)]
 pub enum PkgError {
     #[error("Database error: {0}")]
@@ -17,6 +19,9 @@ pub enum PkgError {
 
     #[error("Database sync error: {0}")]
     DBSyncError(#[from] tokio::task::JoinError),
+
+    #[error("Read env variable error: {0}")]
+    ReadVarError(#[from] VarError),
 }
 
 impl serde::Serialize for PkgError {

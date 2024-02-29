@@ -12,6 +12,7 @@ const emit = defineEmits<{
   pageChange: [{ page: number, page_size: number }]
 }>()
 
+const syncLoading = ref(false)
 const confirm = useConfirm()
 const toast = useToast()
 const router = useRouter()
@@ -73,12 +74,16 @@ function openCatePage() {
 
 async function syncLocalData2Pg() {
   try {
+    syncLoading.value = true
     await invoke('sync_data_to_postgres', {})
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Sync success!', life: 3000 })
   }
   catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+  }
+  finally {
+    syncLoading.value = false
   }
 }
 
@@ -116,7 +121,16 @@ async function onCellEditComplete(event: any) {
   >
     <template #header>
       <div class="flex justify-end gap-3">
-        <Button label="Sync" @click="syncLocalData2Pg" />
+        <Button
+          v-tooltip.top="{
+            value: 'You should set env variable `POSTGRESQL_URL`',
+            showDelay: 100,
+            hideDelay: 300,
+            class: 'min-w-100',
+          }"
+          label="Sync" :loading="syncLoading"
+          @click="syncLocalData2Pg"
+        />
         <Button label="Category" severity="secondary" @click="openCatePage" />
         <PkgAddOrUpdateModal @reload="emit('reload')" />
       </div>

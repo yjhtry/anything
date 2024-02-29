@@ -4,6 +4,7 @@ import 'primevue/resources/themes/aura-dark-green/theme.css'
 import 'primeicons/primeicons.css'
 
 import ToastService from 'primevue/toastservice'
+import Tooltip from 'primevue/tooltip'
 import ConfirmationService from 'primevue/confirmationservice'
 import FloatLabel from 'primevue/floatlabel'
 
@@ -21,6 +22,7 @@ export function install({ app }: { app: App }) {
   app.component('Toast', Toast)
   app.component('ConfirmPopup', ConfirmPopup)
   app.component('FloatLabel', FloatLabel)
+  app.directive('tooltip', Tooltip)
 
   app.use(ToastService)
   app.use(ConfirmationService)

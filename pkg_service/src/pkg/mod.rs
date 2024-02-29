@@ -1,4 +1,5 @@
 mod manager;
+mod sync;
 
 use crate::{
     abi::{

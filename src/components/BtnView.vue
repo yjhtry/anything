@@ -20,7 +20,7 @@ const visible = ref(false)
     modal
     header="Detail"
     v-bind="dialogProps"
-    class="min-w-120"
+    class="min-w-120 pb-10"
   >
     <slot />
   </Dialog>
