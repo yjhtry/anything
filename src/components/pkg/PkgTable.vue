@@ -106,8 +106,8 @@ async function onCellEditComplete(event: any) {
 <template>
   <ConfirmPopup />
   <DataTable
-
-    scrollable paginator
+    scroll-height="70vh"
+    paginator scrollable
     data-key="id"
     :loading="loading"
     :value="dataSource"
