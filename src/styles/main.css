@@ -1,9 +1,7 @@
 html,
-body {
+body,
+#app {
   min-height: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: white;
 }
 
 a {
@@ -15,6 +13,10 @@ a:hover {
   text-decoration: none;
 }
 
-html.dark body #app {
+#app {
+  background-color: white;
+}
+
+html.dark #app {
   background-color: rgba(24, 24, 27);
 }

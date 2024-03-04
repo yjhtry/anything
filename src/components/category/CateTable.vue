@@ -57,7 +57,8 @@ function onBack() {
 <template>
   <ConfirmPopup />
   <DataTable
-    scroll-height="70vh"
+    scroll-height="58vh"
+    scrollable
     paginator
     data-key="id"
     :loading="loading"
