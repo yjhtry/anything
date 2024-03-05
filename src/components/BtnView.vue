@@ -21,6 +21,7 @@ const visible = ref(false)
     header="Detail"
     v-bind="dialogProps"
     class="min-w-120 pb-10"
+    :dismissable-mask="dialogProps?.dismissableMask ?? true"
   >
     <slot />
   </Dialog>

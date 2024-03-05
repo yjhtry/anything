@@ -89,7 +89,9 @@ async function syncLocalData2Pg() {
 
 async function onCellEditComplete(event: any) {
   try {
-    const { data, newValue } = event
+    const { data, newValue = [], value = [] } = event
+    if (newValue.sort().toString() === value.sort().toString())
+      return
 
     await updatePkgCates({ id: data.id, categories: newValue })
 
