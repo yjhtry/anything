@@ -59,6 +59,7 @@ function onBack() {
   <DataTable
     scroll-height="58vh"
     scrollable
+    lazy
     paginator
     data-key="id"
     :loading="loading"

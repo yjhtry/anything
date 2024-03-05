@@ -14,6 +14,16 @@ use crate::abi::{
     PkgError,
 };
 
+macro_rules! query_cond {
+    ($name:ident, $field:literal, $value:expr) => {
+        let $name = if $value.is_empty() {
+            "".to_string()
+        } else {
+            format!(" AND p.{} LIKE '%{}%'", $field, $value)
+        };
+    };
+}
+
 impl Pkg for PackManager<Sqlite> {
     async fn add_package(&self, data: PackageAddReq) -> Result<PackageAddRes, PkgError> {
         let mut tx = self.pool.begin().await?;
@@ -172,47 +182,56 @@ impl Pkg for PackManager<Sqlite> {
             .collect::<Vec<String>>()
             .join(", ");
 
-        let mut query =
+        query_cond!(name_cond, "name", data.name);
+        query_cond!(desc_cond, "description", data.description);
+        query_cond!(reason_cond, "reason", data.reason);
+
+        let categories_cond = if categories.is_empty() {
+            "".to_string()
+        } else {
+            format!(" AND r.category_id IN ({})", categories)
+        };
+
+        let group_by = format!(
+            " GROUP BY p.id LIMIT {} OFFSET {}",
+            page_size,
+            (page - 1) * page_size
+        );
+
+        let where_cond = format!("{} {} {}", name_cond, desc_cond, reason_cond,);
+
+        let query = format!(
             "SELECT p.id, p.name, p.description, p.reason, p.link, p.created_at, p.updated_at,
-            GROUP_CONCAT(r.category_id, ',') as category_ids
-            FROM packages p
-            LEFT JOIN package_category_relations r ON p.id = r.package_id
-            WHERE 1 = 1 "
-                .to_string();
-
-        if !data.name.is_empty() {
-            query.push_str(" AND p.name LIKE $1");
-        }
-
-        if !data.description.is_empty() {
-            query.push_str(" AND p.description LIKE $2");
-        }
-
-        if !data.reason.is_empty() {
-            query.push_str(" AND p.reason LIKE $3");
-        }
-
-        if !categories.is_empty() {
-            query.push_str(" AND r.category_id IN ($4)");
-        }
-
-        query.push_str(" GROUP BY p.id LIMIT $5 OFFSET $6");
+                GROUP_CONCAT(p.category_id, ',') as category_ids
+                FROM (SELECT * FROM packages p JOIN package_category_relations r ON p.id = r.package_id WHERE TRUE {} {}) p
+                {}",
+            where_cond, categories_cond, group_by
+        );
 
         let res: Vec<Package> = sqlx::query_as(query.as_str())
             .bind(format!("%{}%", data.name))
             .bind(format!("%{}%", data.description))
             .bind(format!("%{}%", data.reason))
-            .bind(categories)
+            .bind(categories.clone())
             .bind(page_size)
             .bind((page - 1) * page_size)
             .fetch_all(&self.pool)
             .await?;
 
-        // query total
-        let total: i64 = sqlx::query("SELECT COUNT(*) FROM packages")
-            .fetch_one(&self.pool)
-            .await?
-            .get(0);
+        let total_cond = if categories.is_empty() {
+            format!(" WHERE 1 = 1 {}", where_cond)
+        } else {
+            format!(
+                " JOIN package_category_relations r ON p.id = r.package_id WHERE 1 = 1 {} {} GROUP BY p.id",
+                where_cond, categories_cond
+            )
+        };
+
+        let total: i64 =
+            sqlx::query(format!("SELECT COUNT(*) FROM packages p {}", total_cond).as_str())
+                .fetch_one(&self.pool)
+                .await?
+                .get(0);
 
         Ok(PackageQueryRes { total, data: res })
     }

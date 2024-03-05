@@ -14,7 +14,9 @@ const total = computed(() => data.value?.total || 0)
 const dataSource = computed(() => data.value?.data || [])
 
 function onSearch(data: QueryPkgsParams) {
-  query.value = { ...query.value, ...data }
+  const { page, page_size } = query.value
+
+  query.value = { page, page_size, ...data }
 }
 
 watchEffect(() => {
