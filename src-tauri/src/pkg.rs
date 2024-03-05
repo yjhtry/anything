@@ -10,6 +10,8 @@ use pkg_service::{
 use sqlx::PgPool;
 use tauri::State;
 
+use crate::settings::Settings;
+
 #[tauri::command]
 pub async fn query_packages(
     data: PackageQueryReq,
@@ -105,9 +107,20 @@ pub async fn update_category(
 }
 
 #[tauri::command]
-pub async fn sync_data_to_postgres(state: State<'_, PackManager>) -> Result<(), PkgError> {
+pub async fn sync_data_to_postgres(
+    state: State<'_, PackManager>,
+    settings: State<'_, Settings>,
+) -> Result<(), PkgError> {
     let pack_manager = state.inner();
-    let pg_pool = PgPool::connect(std::env::var("POSTGRESQL_URL")?.as_str()).await?;
+    let sync_url = settings.inner().value.pkg_sync_url.as_str();
+
+    if sync_url.is_empty() {
+        return Err(PkgError::ReadPkgDbSettingError(
+            "please set sync postgres connect url key `pkgSyncUrl` in settings.json".to_string(),
+        ));
+    }
+
+    let pg_pool = PgPool::connect(sync_url).await?;
     let pg_manager = PackManager::new(pg_pool);
     pack_manager.sync(pg_manager).await
 }

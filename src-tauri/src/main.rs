@@ -4,15 +4,21 @@
 mod const_var;
 mod db_init;
 mod pkg;
+mod settings;
+mod utils;
 
 use pkg_service::PackManager;
+use settings::Settings;
 use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
-            let pool = db_init::init(app).expect("error while initializing database");
+            let settings = Settings::new(&app);
+            let pool = db_init::init(settings.clone()).expect("error while initializing database");
+
             app.manage(PackManager::new(pool));
+            app.manage(settings);
 
             Ok(())
         })
