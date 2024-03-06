@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Avatar: typeof import('primevue/avatar')['default']
     BtnView: typeof import('./src/components/BtnView.vue')['default']
     Button: typeof import('primevue/button')['default']
     CateAddOrUpdateModal: typeof import('./src/components/category/CateAddOrUpdateModal.vue')['default']

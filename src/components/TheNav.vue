@@ -15,7 +15,8 @@ function openLink(path: string) {
   <nav
     text-xl class="nav flex border-b-1 border-b-[#e2e8f0] border-b-solid bg-white px-6 py-3 dark:border-b-[#27272a] dark:bg-[rgb(24,_24,_27)]"
   >
-    <div mr-auto text="4" font-700>
+    <div class="mr-auto flex items-center gap-3 font-700" text="4">
+      <Avatar image="/logo.png" />
       Anything
     </div>
     <div class="flex items-center">
