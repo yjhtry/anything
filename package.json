@@ -3,8 +3,10 @@
   "private": true,
   "packageManager": "pnpm@8.15.4",
   "scripts": {
-    "build": "vite build",
-    "dev": "vite --port 3333",
+    "build-web": "vite build",
+    "dev-web": "vite --port 3333",
+    "build": "pnpm tauri build",
+    "dev": "pnpm tauri dev",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
     "preview": "vite preview",

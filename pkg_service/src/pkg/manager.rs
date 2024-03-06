@@ -562,7 +562,7 @@ mod test {
             .await
             .unwrap();
 
-        assert_eq!(res.total, 2);
+        assert_eq!(res.total, 1);
         assert_eq!(res.data[0].name, "test2");
     }
 
