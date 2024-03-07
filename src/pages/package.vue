@@ -13,10 +13,10 @@ const { data, loading, error, reload } = useInvoke(getPackages, query)
 const total = computed(() => data.value?.total || 0)
 const dataSource = computed(() => data.value?.data || [])
 
-function onSearch(data: QueryPkgsParams) {
-  const { page, page_size } = query.value
+function onSearch(data: QueryPkgsParams, isReset = false) {
+  const oldQuery = isReset ? {} : query.value
 
-  query.value = { page, page_size, ...data }
+  query.value = { ...oldQuery, ...data }
 }
 
 watchEffect(() => {

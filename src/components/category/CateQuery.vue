@@ -4,7 +4,7 @@ import type { QueryCatesParams } from '~/services/pkg'
 type State = Omit<QueryCatesParams, 'page' | 'page_size'>
 
 const emit = defineEmits<{
-  search: [QueryCatesParams]
+  search: [QueryCatesParams, boolean?]
 }>()
 
 const toast = useToast()
@@ -26,7 +26,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 function onReset() {
   resetForm()
-  emit('search', {})
+  emit('search', {}, true)
 }
 </script>
 

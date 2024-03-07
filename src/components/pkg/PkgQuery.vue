@@ -3,11 +3,7 @@ import type { QueryPkgsParams } from '~/services/pkg'
 
 type State = Omit<QueryPkgsParams, 'page' | 'page_size'>
 
-const { onSearch } = defineProps<{
-  onSearch: (query: QueryPkgsParams) => any
-}>()
-
-const emit = defineEmits<{ search: [QueryPkgsParams] }>()
+const emit = defineEmits<{ search: [QueryPkgsParams, boolean?] }>()
 
 const toast = useToast()
 const catesOptions = useCatesTree()
@@ -29,8 +25,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 function onReset() {
   resetForm()
-  onSearch({})
-  emit('search', {})
+  emit('search', {}, true)
 }
 </script>
 

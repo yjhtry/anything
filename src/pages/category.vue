@@ -9,10 +9,10 @@ const { data, loading, error, reload } = useInvoke(getCategories, query)
 const total = computed(() => data.value?.total || 0)
 const dataSource = computed(() => data.value?.data || [])
 
-function onSearch(data: QueryCatesParams) {
-  const { page, page_size } = query.value
+function onSearch(data: QueryCatesParams, isReset = false) {
+  const oldQuery = isReset ? {} : query.value
 
-  query.value = { page, page_size, ...data }
+  query.value = { ...oldQuery, ...data }
 }
 
 watchEffect(() => {

@@ -1,7 +1,6 @@
 use std::{fs, path::PathBuf};
 
 use serde::Deserialize;
-use serde_json::json;
 use tauri::App;
 
 use crate::{

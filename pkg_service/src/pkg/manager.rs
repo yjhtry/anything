@@ -15,11 +15,11 @@ use crate::abi::{
 };
 
 macro_rules! query_cond {
-    ($name:ident, $field:literal, $value:expr) => {
+    ($name:ident, $cond:expr, $value:expr) => {
         let $name = if $value.is_empty() {
             "".to_string()
         } else {
-            format!(" AND p.{} LIKE '%{}%'", $field, $value)
+            format!(" AND {}", $cond)
         };
     };
 }
@@ -182,9 +182,21 @@ impl Pkg for PackManager<Sqlite> {
             .collect::<Vec<String>>()
             .join(", ");
 
-        query_cond!(name_cond, "name", data.name);
-        query_cond!(desc_cond, "description", data.description);
-        query_cond!(reason_cond, "reason", data.reason);
+        query_cond!(
+            name_cond,
+            format!("p.name LIKE '%{}%'", data.name).as_str(),
+            data.name
+        );
+        query_cond!(
+            desc_cond,
+            format!("p.description LIKE '%{}%'", data.description),
+            data.description
+        );
+        query_cond!(
+            reason_cond,
+            format!("p.reason LIKE '%{}%'", data.reason),
+            data.reason
+        );
 
         let categories_cond = if categories.is_empty() {
             "".to_string()
@@ -199,6 +211,8 @@ impl Pkg for PackManager<Sqlite> {
         );
 
         let where_cond = format!("{} {} {}", name_cond, desc_cond, reason_cond,);
+
+        println!("{}", where_cond);
 
         let query = format!(
             "SELECT p.id, p.name, p.description, p.reason, p.link, p.created_at, p.updated_at,
@@ -222,17 +236,19 @@ impl Pkg for PackManager<Sqlite> {
             format!(" WHERE 1 = 1 {}", where_cond)
         } else {
             format!(
-                " JOIN package_category_relations r ON p.id = r.package_id WHERE 1 = 1 {} {} GROUP BY p.id",
+                " JOIN package_category_relations r ON p.id = r.package_id WHERE 1 = 1 {} {} ",
                 where_cond, categories_cond
             )
         };
+
+        println!("{}", total_cond);
 
         let total: i64 =
             sqlx::query(format!("SELECT COUNT(*) FROM packages p {}", total_cond).as_str())
                 .fetch_one(&self.pool)
                 .await?
                 .get(0);
-
+        println!("{}", total);
         Ok(PackageQueryRes { total, data: res })
     }
 
@@ -331,32 +347,38 @@ impl Pkg for PackManager<Sqlite> {
         data: PackageCategoryQueryReq,
     ) -> Result<PackageCategoryQueryRes, PkgError> {
         let (page, page_size) = get_valid_pagination(data.page, data.page_size);
-        let mut query = "SELECT id, name, parent_id, created_at, updated_at FROM package_categories WHERE 1 = 1"
-            .to_string();
 
-        if !data.name.is_empty() {
-            query.push_str(" AND name LIKE $1");
-        }
+        query_cond!(name_cond, format!("name LIKE '%{}%'", data.name), data.name);
 
-        if data.parent_id.is_some() {
-            query.push_str(" AND parent_id = $2");
-        }
+        let parent_id_cond = if data.parent_id.is_some() {
+            format!(" AND parent_id = {}", data.parent_id.unwrap())
+        } else {
+            "".to_string()
+        };
 
-        query.push_str(" LIMIT $3 OFFSET $4;");
+        let where_cond = format!("{} {}", name_cond, parent_id_cond);
 
-        let res = sqlx::query_as(query.as_str())
-            .bind(format!("%{}%", data.name))
-            .bind(data.parent_id.unwrap_or(0))
-            .bind(page_size)
-            .bind((page - 1) * page_size)
-            .fetch_all(&self.pool)
-            .await?;
+        let query = format!(
+            "SELECT id, name, parent_id, created_at, updated_at FROM package_categories
+              WHERE 1 = 1 {}  LIMIT {} OFFSET {};",
+            where_cond,
+            page_size,
+            (page - 1) * page_size
+        );
+
+        let res = sqlx::query_as(query.as_str()).fetch_all(&self.pool).await?;
 
         // query total
-        let total: i64 = sqlx::query("SELECT COUNT(*) FROM package_categories")
-            .fetch_one(&self.pool)
-            .await?
-            .get(0);
+        let total: i64 = sqlx::query(
+            format!(
+                "SELECT COUNT(*) FROM package_categories WHERE 1 = 1 {}",
+                where_cond
+            )
+            .as_str(),
+        )
+        .fetch_one(&self.pool)
+        .await?
+        .get(0);
 
         Ok(PackageCategoryQueryRes { total, data: res })
     }
