@@ -1,6 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use serde::Deserialize;
+use serde_json::json;
 use tauri::App;
 
 use crate::{
@@ -9,7 +10,7 @@ use crate::{
 };
 
 /// Represents the values of the settings.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SettingValue {
     #[serde(default)]
@@ -44,7 +45,8 @@ impl Settings {
             content = "{}".to_string();
         }
 
-        let value = serde_json::from_str(content.as_str()).unwrap();
+        let value = serde_json::from_str(remove_comments(content).as_str())
+            .unwrap_or(SettingValue::default());
 
         Self {
             pkg_migrations_folder: rt_app_path.join(PKG_MIGRATIONS_FOLDER),
@@ -70,4 +72,13 @@ impl Settings {
     pub fn get_pkg_migrations_folder(&self) -> &str {
         self.pkg_migrations_folder.to_str().unwrap()
     }
+}
+
+fn remove_comments(json: String) -> String {
+    let lines: Vec<&str> = json
+        .lines()
+        .filter(|line| !line.trim().starts_with("//"))
+        .collect();
+
+    lines.join("\n")
 }
