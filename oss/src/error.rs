@@ -9,8 +9,7 @@ impl serde::Serialize for OssError {
     where
         S: serde::Serializer,
     {
-        match self {
-            e => serializer.serialize_str(e.to_string().as_str()),
-        }
+        let e = self;
+        serializer.serialize_str(e.to_string().as_str())
     }
 }

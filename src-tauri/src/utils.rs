@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::const_var::APP_NAME;
 
@@ -26,7 +26,7 @@ pub fn get_app_folder() -> PathBuf {
 /// # Returns
 ///
 /// The path to the file.
-pub fn get_file_path(folder: &PathBuf, path: &str) -> std::path::PathBuf {
+pub fn get_file_path(folder: &Path, path: &str) -> std::path::PathBuf {
     let file_path = folder.join(path);
 
     if !file_path.exists() {
@@ -46,7 +46,7 @@ pub fn get_file_path(folder: &PathBuf, path: &str) -> std::path::PathBuf {
 /// # Returns
 ///
 /// The path to the subfolder.
-pub fn get_folder_path(folder: &PathBuf, path: &str) -> std::path::PathBuf {
+pub fn get_folder_path(folder: &Path, path: &str) -> std::path::PathBuf {
     let folder_path = folder.join(path);
 
     if !folder_path.exists() {

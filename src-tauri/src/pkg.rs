@@ -1,3 +1,5 @@
+#![allow(clippy::incompatible_msrv)]
+
 use pkg_service::{
     types::{
         Package, PackageAddReq, PackageAddRes, PackageCategoryAddReq, PackageCategoryAddRes,

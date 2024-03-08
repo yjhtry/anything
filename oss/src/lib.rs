@@ -1,5 +1,5 @@
 use rfd::AsyncFileDialog;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 mod error;
 mod ext;
@@ -13,7 +13,7 @@ pub async fn pick_file() -> Option<PathBuf> {
         .map(|file| file.path().to_owned())
 }
 
-pub async fn move_file(from: &PathBuf, to: &PathBuf) -> Result<u64, OssError> {
+pub async fn move_file(from: &PathBuf, to: &Path) -> Result<u64, OssError> {
     let file_path = to.join(from.file_name().unwrap());
 
     tokio::fs::copy(from, file_path)

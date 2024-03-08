@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![allow(clippy::incompatible_msrv)]
 
 mod const_var;
 mod db_init;
@@ -15,7 +16,7 @@ use tauri::Manager;
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
-            let settings = Settings::new(&app);
+            let settings = Settings::new(app);
             let pool = db_init::init(settings.clone()).expect("error while initializing database");
 
             app.manage(PackManager::new(pool));

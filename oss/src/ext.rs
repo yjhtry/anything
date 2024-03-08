@@ -1,4 +1,4 @@
-use std::{ffi::OsStr, path::PathBuf};
+use std::{ffi::OsStr, path::Path};
 
 /// Returns the kind of file based on its extension.
 ///
@@ -29,12 +29,8 @@ use std::{ffi::OsStr, path::PathBuf};
 /// let kind = get_kind_from_path(&path);
 /// assert_eq!(kind, "image");
 /// ```
-pub fn get_kind_from_path(path: &PathBuf) -> &'static str {
-    let extension = path
-        .extension()
-        .map(OsStr::to_str)
-        .flatten()
-        .unwrap_or_default();
+pub fn get_kind_from_path(path: &Path) -> &'static str {
+    let extension = path.extension().and_then(OsStr::to_str).unwrap_or_default();
 
     // match extension all img ext to image, video extension to video, audio extension to audio, pdf to pdf, other to other
     match extension {
@@ -52,6 +48,8 @@ pub fn get_kind_from_path(path: &PathBuf) -> &'static str {
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use super::*;
 
     #[test]
