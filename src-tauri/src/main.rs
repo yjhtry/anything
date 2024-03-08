@@ -37,6 +37,7 @@ fn main() {
             pkg::update_category,
             pkg::sync_data_to_postgres,
             fs::move_file_to_oss,
+            fs::get_oss_tree
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
