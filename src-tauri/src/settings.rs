@@ -37,8 +37,8 @@ impl Settings {
     pub fn new(app: &App) -> Self {
         let app_folder = get_app_folder();
         let rt_app_path = app.handle().path_resolver().resource_dir().unwrap();
-        let mut content = fs::read_to_string(get_file_path(app_folder.clone(), SETTINGS_FILE))
-            .unwrap_or_default();
+        let mut content =
+            fs::read_to_string(get_file_path(&app_folder, SETTINGS_FILE)).unwrap_or_default();
 
         if content.is_empty() {
             content = "{}".to_string();
@@ -49,7 +49,7 @@ impl Settings {
 
         Self {
             pkg_migrations_folder: rt_app_path.join(PKG_MIGRATIONS_FOLDER),
-            pkg_db_file: get_file_path(app_folder.clone(), PKG_DB_FILE),
+            pkg_db_file: get_file_path(&app_folder, PKG_DB_FILE),
             value,
         }
     }

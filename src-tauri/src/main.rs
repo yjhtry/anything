@@ -3,6 +3,7 @@
 
 mod const_var;
 mod db_init;
+mod fs;
 mod pkg;
 mod settings;
 mod utils;
@@ -33,7 +34,8 @@ fn main() {
             pkg::query_categories,
             pkg::delete_category,
             pkg::update_category,
-            pkg::sync_data_to_postgres
+            pkg::sync_data_to_postgres,
+            fs::move_file_to_oss,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

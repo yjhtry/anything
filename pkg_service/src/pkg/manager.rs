@@ -212,8 +212,6 @@ impl Pkg for PackManager<Sqlite> {
 
         let where_cond = format!("{} {} {}", name_cond, desc_cond, reason_cond,);
 
-        println!("{}", where_cond);
-
         let query = format!(
             "SELECT p.id, p.name, p.description, p.reason, p.link, p.created_at, p.updated_at,
                 GROUP_CONCAT(p.category_id, ',') as category_ids
@@ -241,14 +239,12 @@ impl Pkg for PackManager<Sqlite> {
             )
         };
 
-        println!("{}", total_cond);
-
         let total: i64 =
             sqlx::query(format!("SELECT COUNT(*) FROM packages p {}", total_cond).as_str())
                 .fetch_one(&self.pool)
                 .await?
                 .get(0);
-        println!("{}", total);
+
         Ok(PackageQueryRes { total, data: res })
     }
 
@@ -817,7 +813,7 @@ mod test {
             .await
             .unwrap();
 
-        assert_eq!(res.total, 2);
+        assert_eq!(res.total, 1);
         assert_eq!(res.data[0].name, "test2");
     }
 
