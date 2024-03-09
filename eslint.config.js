@@ -7,6 +7,8 @@ export default antfu(
       './pkg_service',
       './public',
       './rfcs',
+      './oss',
+      './target',
     ],
     unocss: true,
     formatters: true,

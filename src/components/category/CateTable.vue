@@ -58,9 +58,8 @@ function onBack() {
   <ConfirmPopup />
   <DataTable
     scroll-height="58vh"
-    scrollable
-    lazy
-    paginator
+
+    scrollable lazy paginator
     data-key="id"
     :loading="loading"
     :value="dataSource"
