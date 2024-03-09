@@ -12,11 +12,6 @@ const emit = defineEmits<{
   pageChange: [{ page: number, page_size: number }]
 }>()
 
-watchEffect(() => {
-  log(total)
-  log(dataSource)
-})
-
 const syncLoading = ref(false)
 const confirm = useConfirm()
 const toast = useToast()
@@ -114,9 +109,8 @@ async function onCellEditComplete(event: any) {
   <ConfirmPopup />
   <DataTable
     scroll-height="58vh"
-    scrollable
-    paginator
-    lazy
+
+    scrollable lazy paginator
     data-key="id"
     :loading="loading"
     :value="dataSource"

@@ -12,6 +12,7 @@ export type Apis = 'add_package'
   | 'query_categories'
   | 'sync_data_to_postgres'
   | 'move_file_to_oss'
+  | 'get_oss_tree'
 
 export function invoke<T>(api: Apis, data: any) {
   return _invoke<T>(api, data)

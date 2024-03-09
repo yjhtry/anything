@@ -31,7 +31,6 @@ declare global {
   const debouncedWatch: typeof import('@vueuse/core')['debouncedWatch']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
-  const defineLoader: typeof import('vue-router/auto')['defineLoader']
   const definePage: typeof import('unplugin-vue-router/runtime')['definePage']
   const deleteCategory: typeof import('./src/services/pkg')['deleteCategory']
   const deletePackage: typeof import('./src/services/pkg')['deletePackage']
@@ -42,6 +41,7 @@ declare global {
   const getCategories: typeof import('./src/services/pkg')['getCategories']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getOssTree: typeof import('./src/services/oss')['getOssTree']
   const getPackageById: typeof import('./src/services/pkg')['getPackageById']
   const getPackages: typeof import('./src/services/pkg')['getPackages']
   const h: typeof import('vue')['h']
@@ -185,7 +185,6 @@ declare global {
   const useEventSource: typeof import('@vueuse/core')['useEventSource']
   const useEyeDropper: typeof import('@vueuse/core')['useEyeDropper']
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
-  const useFeild: typeof import('vee-validate')['useFeild']
   const useFetch: typeof import('@vueuse/core')['useFetch']
   const useField: typeof import('vee-validate')['useField']
   const useFileDialog: typeof import('@vueuse/core')['useFileDialog']
@@ -359,6 +358,7 @@ declare module 'vue' {
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getOssTree: UnwrapRef<typeof import('./src/services/oss')['getOssTree']>
     readonly getPackageById: UnwrapRef<typeof import('./src/services/pkg')['getPackageById']>
     readonly getPackages: UnwrapRef<typeof import('./src/services/pkg')['getPackages']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
@@ -668,6 +668,7 @@ declare module '@vue/runtime-core' {
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getOssTree: UnwrapRef<typeof import('./src/services/oss')['getOssTree']>
     readonly getPackageById: UnwrapRef<typeof import('./src/services/pkg')['getPackageById']>
     readonly getPackages: UnwrapRef<typeof import('./src/services/pkg')['getPackages']>
     readonly h: UnwrapRef<typeof import('vue')['h']>

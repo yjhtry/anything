@@ -1,4 +1,5 @@
 use rfd::AsyncFileDialog;
+use serde::Serialize;
 use std::{
     collections::HashMap,
     ffi::OsStr,
@@ -8,8 +9,28 @@ use walkdir::{DirEntry, WalkDir};
 
 mod error;
 mod ext;
+mod server;
 pub use error::OssError;
 pub use ext::*;
+pub use server::*;
+
+#[derive(Debug, Serialize)]
+pub struct OssItem {
+    pub name: String,
+    pub url: String,
+    pub size: usize,
+}
+
+impl From<&Path> for OssItem {
+    fn from(path: &Path) -> Self {
+        let name = path.file_name().unwrap().to_str().unwrap().to_string();
+        let parent = path.parent().unwrap().to_str().unwrap();
+        let url = format!("{}/{}", parent, name);
+        let size = path.metadata().unwrap().len() as usize;
+
+        OssItem { name, url, size }
+    }
+}
 
 /// Asynchronously opens a file dialog for the user to pick a file.
 /// Returns the path of the selected file, or `None` if no file was selected.
@@ -47,7 +68,7 @@ pub fn is_hidden(entry: &DirEntry) -> bool {
 /// Retrieves the directory tree structure of a given directory.
 /// Returns a `HashMap` where the keys are folder names and the values are lists of file names.
 /// Returns an `OssError` if there was an error while traversing the directory.
-pub fn get_oss_tree(dir: &Path) -> Result<HashMap<String, Vec<String>>, OssError> {
+pub fn get_oss_tree(dir: &Path) -> Result<HashMap<String, Vec<OssItem>>, OssError> {
     let mut tree = HashMap::new();
 
     for entry in WalkDir::new(dir)
@@ -57,16 +78,20 @@ pub fn get_oss_tree(dir: &Path) -> Result<HashMap<String, Vec<String>>, OssError
         let entry = entry?;
         let path = entry.path();
 
+        if dir == path {
+            continue;
+        }
+
         if path.is_dir() {
             if let Some(folder) = path.file_name().and_then(OsStr::to_str) {
                 tree.insert(folder.to_string(), vec![]);
             }
         } else if let Some(parent_path) = path.parent() {
             if let Some(parent_name) = parent_path.file_name().and_then(OsStr::to_str) {
-                if let Some(file_name) = path.file_name().and_then(OsStr::to_str) {
+                if path.file_name().and_then(OsStr::to_str).is_some() {
                     tree.entry(parent_name.to_string())
                         .or_insert(vec![])
-                        .push(file_name.to_string());
+                        .push(path.into());
                 }
             }
         }
