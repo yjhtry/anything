@@ -1,19 +1,28 @@
 use std::{fs, path::PathBuf};
 
-use serde::Deserialize;
-use tauri::App;
+use serde::{Deserialize, Serialize};
+use tauri::{App, State};
 
 use crate::{
     const_var::{PKG_DB_FILE, PKG_MIGRATIONS_FOLDER, SETTINGS_FILE},
     utils::{get_app_folder, get_file_path},
 };
 
+#[tauri::command]
+pub fn get_app_settings(settings: State<'_, Settings>) -> SettingValue {
+    settings.inner().value.clone()
+}
+
 /// Represents the values of the settings.
-#[derive(Debug, Deserialize, Clone, Default)]
+#[derive(Debug, Deserialize, Serialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SettingValue {
     #[serde(default)]
     pub pkg_sync_url: String,
+    #[serde(default)]
+    pub oss_host: String,
+    #[serde(default)]
+    pub oss_port: u16,
 }
 
 /// Represents the application settings.
@@ -21,6 +30,7 @@ pub struct SettingValue {
 pub struct Settings {
     pub pkg_migrations_folder: PathBuf,
     pub pkg_db_file: PathBuf,
+    pub oss_folder: PathBuf,
     pub value: SettingValue,
 }
 
@@ -50,6 +60,7 @@ impl Settings {
         Self {
             pkg_migrations_folder: rt_app_path.join(PKG_MIGRATIONS_FOLDER),
             pkg_db_file: get_file_path(&app_folder, PKG_DB_FILE),
+            oss_folder: get_file_path(&app_folder, "oss"),
             value,
         }
     }

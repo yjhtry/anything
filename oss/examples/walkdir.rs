@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use oss::is_hidden;
+use oss_service::is_hidden;
 use walkdir::WalkDir;
 
 fn main() {

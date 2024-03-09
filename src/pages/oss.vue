@@ -12,6 +12,10 @@ async function openFile() {
     toast.add({ severity: 'error', summary: 'Error', detail: e, life: 5000 })
   }
 }
+
+onMounted(() => {
+  getAppSettings().then(log)
+})
 </script>
 
 <template>

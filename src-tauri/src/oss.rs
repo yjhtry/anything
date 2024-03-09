@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use oss::{get_kind_from_path, move_file, pick_file, OssError, OssItem};
+use oss_service::{get_kind_from_path, move_file, pick_file, OssError, OssItem};
 use tauri::command;
 
 use crate::utils::{get_app_folder, get_folder_path};
@@ -32,5 +32,5 @@ pub async fn get_oss_tree() -> Result<HashMap<String, Vec<OssItem>>, OssError> {
     let app_folder = get_app_folder();
     let oss_folder = get_folder_path(&app_folder, "oss");
 
-    oss::get_oss_tree(&oss_folder)
+    oss_service::get_oss_tree(&oss_folder)
 }

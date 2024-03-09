@@ -38,6 +38,7 @@ declare global {
   const effectScope: typeof import('vue')['effectScope']
   const ellipsisText: typeof import('./src/utils/retrieve')['ellipsisText']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const getAppSettings: typeof import('./src/services/app')['getAppSettings']
   const getCategories: typeof import('./src/services/pkg')['getCategories']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -355,6 +356,7 @@ declare module 'vue' {
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly ellipsisText: UnwrapRef<typeof import('./src/utils/retrieve')['ellipsisText']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly getAppSettings: UnwrapRef<typeof import('./src/services/app')['getAppSettings']>
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
@@ -665,6 +667,7 @@ declare module '@vue/runtime-core' {
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly ellipsisText: UnwrapRef<typeof import('./src/utils/retrieve')['ellipsisText']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly getAppSettings: UnwrapRef<typeof import('./src/services/app')['getAppSettings']>
     readonly getCategories: UnwrapRef<typeof import('./src/services/pkg')['getCategories']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>

@@ -19,7 +19,7 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.5.4", features = ["api-all"] }
 pkg_service = { path = "../pkg_service" }
-oss = { path = "../oss" }
+oss_service = { path = "../oss" }
 anyhow = "1.0.80"
 sqlx = { version = "0.7.3", features = ["runtime-tokio-rustls", "sqlite", "postgres"] }
 tokio = { version = "1.36.0", features = ["full"] }

@@ -1,16 +1,16 @@
-use std::{net::Ipv4Addr, path::PathBuf};
+use std::{net::Ipv4Addr, path::PathBuf, thread::spawn};
 
 use tokio::runtime::Runtime;
 
-pub struct OssServer {
-    oss_path: PathBuf,
-    host: Ipv4Addr,
-    port: u16,
+pub struct OssService {
+    pub oss_path: PathBuf,
+    pub host: Ipv4Addr,
+    pub port: u16,
 }
 
-impl OssServer {
+impl OssService {
     pub fn new(oss_path: PathBuf, host: Ipv4Addr, port: u16) -> Self {
-        OssServer {
+        OssService {
             oss_path,
             host,
             port,
@@ -25,7 +25,9 @@ impl OssServer {
         let server = warp::fs::dir(oss_path);
         let server = warp::serve(server).run((host, port));
 
-        let rt = Runtime::new().unwrap();
-        rt.block_on(server);
+        spawn(|| {
+            let rt = Runtime::new().unwrap();
+            rt.block_on(server);
+        });
     }
 }
