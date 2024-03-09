@@ -15,13 +15,10 @@ pub fn get_app_settings(settings: State<'_, Settings>) -> SettingValue {
 
 /// Represents the values of the settings.
 #[derive(Debug, Deserialize, Serialize, Clone, Default)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", default)]
 pub struct SettingValue {
-    #[serde(default)]
     pub pkg_sync_url: String,
-    #[serde(default)]
     pub oss_host: String,
-    #[serde(default)]
     pub oss_port: u16,
 }
 

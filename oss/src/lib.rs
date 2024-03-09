@@ -19,16 +19,27 @@ pub struct OssItem {
     pub name: String,
     pub url: String,
     pub size: usize,
+    pub path: String,
 }
 
-impl From<&Path> for OssItem {
-    fn from(path: &Path) -> Self {
-        let name = path.file_name().unwrap().to_str().unwrap().to_string();
-        let parent = path.parent().unwrap().to_str().unwrap();
-        let url = format!("{}/{}", parent, name);
-        let size = path.metadata().unwrap().len() as usize;
+fn convert_to_oss_item(path: &Path, server: &str) -> OssItem {
+    let name = path.file_name().unwrap().to_str().unwrap().to_string();
+    let parent = path
+        .parent()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
 
-        OssItem { name, url, size }
+    let url = format!("{}/{}/{}", server, parent, name);
+    let size = path.metadata().unwrap().len() as usize;
+
+    OssItem {
+        name,
+        url,
+        size,
+        path: path.to_str().unwrap().to_string(),
     }
 }
 
@@ -68,7 +79,7 @@ pub fn is_hidden(entry: &DirEntry) -> bool {
 /// Retrieves the directory tree structure of a given directory.
 /// Returns a `HashMap` where the keys are folder names and the values are lists of file names.
 /// Returns an `OssError` if there was an error while traversing the directory.
-pub fn get_oss_tree(dir: &Path) -> Result<HashMap<String, Vec<OssItem>>, OssError> {
+pub fn get_oss_tree(dir: &Path, server: &str) -> Result<HashMap<String, Vec<OssItem>>, OssError> {
     let mut tree = HashMap::new();
 
     for entry in WalkDir::new(dir)
@@ -91,7 +102,7 @@ pub fn get_oss_tree(dir: &Path) -> Result<HashMap<String, Vec<OssItem>>, OssErro
                 if path.file_name().and_then(OsStr::to_str).is_some() {
                     tree.entry(parent_name.to_string())
                         .or_insert(vec![])
-                        .push(path.into());
+                        .push(convert_to_oss_item(path, server));
                 }
             }
         }
@@ -173,7 +184,7 @@ mod tests {
         f.write_all(b"Hello, world!").await.unwrap();
         f.sync_all().await.unwrap();
 
-        let tree = get_oss_tree(dir.path()).unwrap();
+        let tree = get_oss_tree(dir.path(), "").unwrap();
 
         println!("{:?}", tree);
 

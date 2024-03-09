@@ -19,6 +19,7 @@ declare module 'vue' {
     Dialog: typeof import('primevue/dialog')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
     HumanTreeSelect: typeof import('./src/components/HumanTreeSelect.vue')['default']
+    Image: typeof import('primevue/image')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
     InputText: typeof import('primevue/inputtext')['default']
     PkgAddOrUpdateModal: typeof import('./src/components/pkg/PkgAddOrUpdateModal.vue')['default']
