@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, path::Path};
 
 use oss_service::{get_kind_from_path, move_file, pick_file, OssError, OssItem};
 use tauri::{command, State};
@@ -41,4 +41,9 @@ pub async fn get_oss_tree(
     let server = format!("http://{}:{}", host, port);
 
     oss_service::get_oss_tree(&oss_folder, server.as_str())
+}
+
+#[command]
+pub async fn remove_file_from_oss(path: String) -> Result<(), OssError> {
+    oss_service::remove_file(&Path::new(path.as_str()))
 }

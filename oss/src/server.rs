@@ -1,6 +1,7 @@
 use std::{net::Ipv4Addr, path::PathBuf, thread::spawn};
 
 use tokio::runtime::Runtime;
+use warp::Filter;
 
 pub struct OssService {
     pub oss_path: PathBuf,
@@ -22,7 +23,11 @@ impl OssService {
         let host = self.host;
         let port = self.port;
 
-        let server = warp::fs::dir(oss_path);
+        let cors = warp::cors()
+            .allow_any_origin()
+            .allow_methods(vec!["GET", "POST", "DELETE"]);
+
+        let server = warp::fs::dir(oss_path).with(cors);
         let server = warp::serve(server).run((host, port));
 
         spawn(|| {

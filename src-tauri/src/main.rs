@@ -35,6 +35,7 @@ fn main() {
 
             Ok(())
         })
+        .plugin(tauri_plugin_clipboard::init())
         .invoke_handler(tauri::generate_handler![
             pkg::query_packages,
             pkg::add_package,
@@ -49,6 +50,7 @@ fn main() {
             pkg::sync_data_to_postgres,
             oss::move_file_to_oss,
             oss::get_oss_tree,
+            oss::remove_file_from_oss,
             settings::get_app_settings
         ])
         .run(tauri::generate_context!())

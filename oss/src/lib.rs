@@ -3,6 +3,7 @@ use serde::Serialize;
 use std::{
     collections::HashMap,
     ffi::OsStr,
+    fs,
     path::{Path, PathBuf},
 };
 use walkdir::{DirEntry, WalkDir};
@@ -109,6 +110,10 @@ pub fn get_oss_tree(dir: &Path, server: &str) -> Result<HashMap<String, Vec<OssI
     }
 
     Ok(tree)
+}
+
+pub fn remove_file(path: &Path) -> Result<(), OssError> {
+    fs::remove_file(path).map_err(OssError::RemoveFileError)
 }
 
 #[cfg(test)]

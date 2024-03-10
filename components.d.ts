@@ -17,7 +17,6 @@ declare module 'vue' {
     DataTable: typeof import('primevue/datatable')['default']
     DataView: typeof import('primevue/dataview')['default']
     Dialog: typeof import('primevue/dialog')['default']
-    Dropdown: typeof import('primevue/dropdown')['default']
     HumanTreeSelect: typeof import('./src/components/HumanTreeSelect.vue')['default']
     Image: typeof import('primevue/image')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']

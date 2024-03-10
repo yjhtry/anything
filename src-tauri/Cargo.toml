@@ -24,6 +24,7 @@ anyhow = "1.0.80"
 sqlx = { version = "0.7.3", features = ["runtime-tokio-rustls", "sqlite", "postgres"] }
 tokio = { version = "1.36.0", features = ["full"] }
 dirs = "5.0.1"
+tauri-plugin-clipboard = "0.6.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

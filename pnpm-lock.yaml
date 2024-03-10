@@ -23,6 +23,9 @@ dependencies:
   primevue:
     specifier: ^3.49.1
     version: 3.49.1(vue@3.4.21)
+  tauri-plugin-clipboard-api:
+    specifier: ^0.6.0
+    version: 0.6.0
   vee-validate:
     specifier: ^4.12.6
     version: 4.12.6(vue@3.4.21)
@@ -6116,6 +6119,14 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /tauri-plugin-clipboard-api@0.6.0:
+    resolution: {integrity: sha512-8HNkCo+tPiY1sPKrlTkFexUlK/F2m0srUFnPyoL7VdD8BUQniT/0D9FBrm6VsczpLRy6YjD/EezbfN02Lq8PeQ==}
+    dependencies:
+      '@tauri-apps/api': 1.5.3
+      tslib: 2.6.2
+      zod: 3.22.4
+    dev: false
+
   /taze@0.13.3:
     resolution: {integrity: sha512-+NgEyx6F+Ydpwo/9JsWdH40wHGrlZIaYjGtcErg21mdynP/dwTCgOa/gkvOZov1U1brJQCdShG0wifesRucr7A==}
     hasBin: true
@@ -6219,7 +6230,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /tuf-js@2.2.0:
     resolution: {integrity: sha512-ZSDngmP1z6zw+FIkIBjvOp/II/mIub/O7Pp12j1WNsiCpg5R5wAc//i555bBQsE44O94btLt0xM/Zr2LQjwdCg==}
@@ -7032,4 +7042,8 @@ packages:
 
   /zhead@2.2.4:
     resolution: {integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==}
+    dev: false
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false

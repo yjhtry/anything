@@ -14,6 +14,7 @@ export type Apis = 'add_package'
   | 'move_file_to_oss'
   | 'get_oss_tree'
   | 'get_app_settings'
+  | 'remove_file_from_oss'
 
 export function invoke<T>(api: Apis, data: any) {
   return _invoke<T>(api, data)

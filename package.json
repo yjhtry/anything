@@ -21,6 +21,7 @@
     "@vueuse/head": "^2.0.0",
     "primeicons": "^6.0.1",
     "primevue": "^3.49.1",
+    "tauri-plugin-clipboard-api": "^0.6.0",
     "vee-validate": "^4.12.6",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
