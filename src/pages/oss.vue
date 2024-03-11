@@ -5,6 +5,32 @@ const toast = useToast()
 
 const { data, reload } = useInvoke(getOssTree, {})
 
+// sort by key , image -> video -> audio -> other
+
+const sortedData = computed(() => {
+  if (!data?.value)
+    return []
+
+  const keys = Object.keys(data.value)
+  keys.sort((a, b) => {
+    if (a === 'image')
+      return -1
+    if (b === 'image')
+      return 1
+    if (a === 'video')
+      return -1
+    if (b === 'video')
+      return 1
+    if (a === 'audio')
+      return -1
+    if (b === 'audio')
+      return 1
+    return 0
+  })
+
+  return keys.map(key => ({ data: data.value![key], kind: key }))
+})
+
 async function addFile() {
   try {
     await invoke('move_file_to_oss', {})
@@ -69,8 +95,8 @@ onMounted(() => {
   <Toast position="top-center" />
   <div m-3>
     <TabView>
-      <TabPanel v-for="(list, kind) in data" :key="kind" :header="kind as string">
-        <DataView :value="list" data-key="1" paginator :rows="5">
+      <TabPanel v-for="(data, index) in sortedData" :key="index" :header="data.kind as string">
+        <DataView :value="data.data" data-key="1" paginator :rows="5">
           <template #header>
             <div class="flex justify-end">
               <Button @click="addFile">
@@ -79,25 +105,33 @@ onMounted(() => {
             </div>
           </template>
           <template #list="{ items }">
-            <template v-if="kind === 'image'">
-              <div
-                v-for="(item, index) in items" :key="item" class="flex justify-between p-4"
-                :class="{ 'bd-t': index !== 0 }"
-              >
-                <div class="flex gap-6">
+            <div
+              v-for="(item, index) in items" :key="item" class="flex justify-between p-4"
+              :class="{ 'bd-t': index !== 0 }"
+            >
+              <div class="flex gap-6">
+                <template v-if="data.kind === 'image'">
                   <Image :src="item.url" :alt="item.name" width="160" preview />
-                  <div class="flex flex-col justify-center gap-8">
-                    <div>{{ item.name }}</div>
-                    <div>{{ beatifyBytes(item.size) }}</div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3">
-                  <Button icon="pi pi-copy" @click="copyUrl(item.url)" />
-                  <Button icon="pi pi-download" @click="downloadFile(item.url)" />
-                  <Button icon="pi pi-trash" @click="removeFile(item.path)" />
+                </template>
+                <template v-else-if="data.kind === 'video'">
+                  <video controls width="250">
+                    <source :src="item.url" type="video/webm">
+                  </video>
+                </template>
+                <template v-else-if="data.kind === 'audio'">
+                  <audio width="220" controls :src="item.url" />
+                </template>
+                <div class="flex flex-col justify-center gap-8">
+                  <div>{{ item.name }}</div>
+                  <div>{{ beatifyBytes(item.size) }}</div>
                 </div>
               </div>
-            </template>
+              <div class="flex items-center gap-3">
+                <Button icon="pi pi-copy" @click="copyUrl(item.url)" />
+                <Button v-if="data.kind === 'image'" icon="pi pi-download" @click="downloadFile(item.url)" />
+                <Button icon="pi pi-trash" @click="removeFile(item.path)" />
+              </div>
+            </div>
           </template>
         </DataView>
       </TabPanel>
