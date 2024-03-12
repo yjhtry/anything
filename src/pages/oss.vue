@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { writeImageBinary, writeText } from 'tauri-plugin-clipboard-api'
 
+const confirm = useConfirm()
 const toast = useToast()
 
 const { data, reload } = useInvoke(getOssTree, {})
@@ -72,18 +73,28 @@ async function downloadFile(url: string) {
   }
 }
 
-async function removeFile(path: string) {
-  try {
-    log(path)
-    await invoke('remove_file_from_oss', { path })
+async function removeFile(event: any, path: string) {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this file?',
+    icon: 'pi pi-info-circle',
+    rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
+    acceptClass: 'p-button-danger p-button-sm ml-3',
+    rejectLabel: 'Cancel',
+    acceptLabel: 'Delete',
+    accept: async () => {
+      try {
+        await invoke('remove_file_from_oss', { path })
 
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Remove file success!', life: 3000 })
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Remove file success!', life: 3000 })
 
-    reload()
-  }
-  catch (e) {
-    toast.add({ severity: 'warn', summary: 'Error', detail: e, life: 3000 })
-  }
+        reload()
+      }
+      catch (e) {
+        toast.add({ severity: 'warn', summary: 'Error', detail: e, life: 3000 })
+      }
+    },
+  })
 }
 
 onMounted(() => {
@@ -93,6 +104,7 @@ onMounted(() => {
 
 <template>
   <Toast position="top-center" />
+  <ConfirmPopup />
   <div m-3>
     <TabView>
       <TabPanel v-for="(data, index) in sortedData" :key="index" :header="data.kind as string">
@@ -129,7 +141,7 @@ onMounted(() => {
               <div class="flex items-center gap-3">
                 <Button icon="pi pi-copy" @click="copyUrl(item.url)" />
                 <Button v-if="data.kind === 'image'" icon="pi pi-download" @click="downloadFile(item.url)" />
-                <Button icon="pi pi-trash" @click="removeFile(item.path)" />
+                <Button icon="pi pi-trash" @click="removeFile($event, item.path)" />
               </div>
             </div>
           </template>

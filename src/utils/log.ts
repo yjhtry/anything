@@ -17,7 +17,7 @@ export function log(...args: any[]) {
 }
 
 export function wLog(...args: any[]) {
-  watchEffect(() => {
-    log(...args)
-  })
+  watch(args, (value) => {
+    log(...value)
+  }, { deep: true })
 }
