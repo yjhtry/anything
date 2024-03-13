@@ -15,15 +15,25 @@ When anything app start, it will start a oss server and in the oss page we can m
 
 Basic architecture:
 
-todo
+![oss-arch](/sreenshot/oss-arch.png)
 
 ### Events
 
-todo
+```ts
+invoke('move_file_to_oss', {})
+
+invoke('get_oss_tree', {})
+
+invoke('get_app_settings', {})
+
+invoke('remove_file_from_oss', {
+  path: string,
+})
+```
 
 ### Database
 
-todo
+N/A
 
 ## Drawbacks
 
