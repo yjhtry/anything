@@ -398,7 +398,6 @@ impl Pkg for PackManager<Sqlite> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::abi::types::PackageAddReq;
 
     #[tokio::test]
     async fn add_package_should_word() {

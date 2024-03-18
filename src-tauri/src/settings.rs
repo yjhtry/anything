@@ -43,7 +43,14 @@ impl Settings {
     /// A new instance of `Settings`.
     pub fn new(app: &App) -> Self {
         let app_folder = get_app_folder();
-        let rt_app_path = app.handle().path_resolver().resource_dir().unwrap();
+        // ! when setting cargo target dir, tauri resource_dir will return None
+        let root_build_target = env!("CARGO_TARGET_DIR");
+
+        let rt_app_path = match app.handle().path_resolver().resource_dir() {
+            Some(path) => path,
+            None => PathBuf::from(root_build_target).join("debug"),
+        };
+
         let mut content =
             fs::read_to_string(get_file_path(&app_folder, SETTINGS_FILE)).unwrap_or_default();
 
