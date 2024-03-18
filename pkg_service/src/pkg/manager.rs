@@ -204,10 +204,13 @@ impl Pkg for PackManager<Sqlite> {
             format!(" AND r.category_id IN ({})", categories)
         };
 
+        let having = format!(" HAVING COUNT(p.category_id) >= {}", data.categories.len());
+
         let group_by = format!(
-            " GROUP BY p.id LIMIT {} OFFSET {}",
+            " GROUP BY p.id {} LIMIT {} OFFSET {}",
+            having,
             page_size,
-            (page - 1) * page_size
+            (page - 1) * page_size,
         );
 
         let where_cond = format!("{} {} {}", name_cond, desc_cond, reason_cond,);
@@ -233,9 +236,12 @@ impl Pkg for PackManager<Sqlite> {
         let total_cond = if categories.is_empty() {
             format!(" WHERE 1 = 1 {}", where_cond)
         } else {
+            let having = format!(" HAVING COUNT(r.category_id) >= {}", data.categories.len());
             format!(
-                " JOIN package_category_relations r ON p.id = r.package_id WHERE 1 = 1 {} {} ",
-                where_cond, categories_cond
+                " JOIN (SELECT * FROM package_category_relations r WHERE TRUE {} GROUP BY r.package_id {}) r ON p.id = r.package_id WHERE 1 = 1 {}",
+                categories_cond,
+                having,
+                where_cond,
             )
         };
 
