@@ -272,18 +272,19 @@ impl PkgSync for PackManager<Postgres> {
 
 impl DbSync<PackManager<Postgres>> for PackManager<Sqlite> {
     async fn sync(&self, other_manager: PackManager<Postgres>) -> Result<(), PkgError> {
-        let local_packages = sqlx::query_as("SELECT * FROM packages")
+        let local_packages = sqlx::query_as("SELECT * FROM packages where synced = 0")
             .fetch_all(&self.pool)
             .await
             .unwrap();
 
-        let local_categories = sqlx::query_as("SELECT * FROM package_categories")
+        let local_categories = sqlx::query_as("SELECT * FROM package_categories where synced = 0")
             .fetch_all(&self.pool)
             .await?;
 
-        let local_relations = sqlx::query_as("SELECT * FROM package_category_relations")
-            .fetch_all(&self.pool)
-            .await?;
+        let local_relations =
+            sqlx::query_as("SELECT * FROM package_category_relations where synced = 0")
+                .fetch_all(&self.pool)
+                .await?;
 
         other_manager.sync_packages(local_packages).await.unwrap();
 

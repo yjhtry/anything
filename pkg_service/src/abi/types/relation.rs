@@ -6,6 +6,7 @@ pub struct PackageCategoryRelation {
     pub id: i64,
     pub package_id: i64,
     pub category_id: i64,
+    pub synced: u8,
     pub created_at: String,
     pub updated_at: String,
 }

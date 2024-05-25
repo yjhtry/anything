@@ -156,7 +156,7 @@ impl Pkg for PackManager<Sqlite> {
     async fn get_package_by_id(&self, id: i64) -> Result<Package, PkgError> {
         // get package by id and join category
         let res = sqlx::query_as(
-            "SELECT p.id, p.name, p.description, p.reason, p.link, p.created_at, p.updated_at,
+            "SELECT p.id, p.name, p.description, p.reason, p.link, p.synced, p.created_at, p.updated_at,
                 GROUP_CONCAT(r.category_id, ',') as category_ids
             FROM packages p
             LEFT JOIN package_category_relations r ON p.id = r.package_id
@@ -216,7 +216,7 @@ impl Pkg for PackManager<Sqlite> {
         let where_cond = format!("{} {} {}", name_cond, desc_cond, reason_cond,);
 
         let query = format!(
-            "SELECT p.id, p.name, p.description, p.reason, p.link, p.created_at, p.updated_at,
+            "SELECT p.id, p.name, p.description, p.reason, p.link, p.synced, p.created_at, p.updated_at,
                 GROUP_CONCAT(p.category_id, ',') as category_ids
                 FROM (SELECT * FROM packages p JOIN package_category_relations r ON p.id = r.package_id WHERE TRUE {} {}) p
                 {}",
@@ -361,7 +361,7 @@ impl Pkg for PackManager<Sqlite> {
         let where_cond = format!("{} {}", name_cond, parent_id_cond);
 
         let query = format!(
-            "SELECT id, name, parent_id, created_at, updated_at FROM package_categories
+            "SELECT id, name, parent_id, synced, created_at, updated_at FROM package_categories
               WHERE 1 = 1 {}  LIMIT {} OFFSET {};",
             where_cond,
             page_size,

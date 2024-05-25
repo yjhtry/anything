@@ -11,6 +11,7 @@ pub struct Package {
     pub link: String,
     pub categories: Vec<i64>,
     pub reason: String,
+    pub synced: u8,
     pub created_at: String,
     pub updated_at: String,
 }

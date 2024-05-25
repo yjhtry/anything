@@ -8,6 +8,7 @@ pub struct PackageCategory {
     pub id: i64,
     pub name: String,
     pub parent_id: i64,
+    pub synced: u8,
     pub created_at: String,
     pub updated_at: String,
 }

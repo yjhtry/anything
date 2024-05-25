@@ -24,6 +24,7 @@ impl FromRow<'_, SqliteRow> for Package {
         let link = row.get("link");
         let category_ids: String = row.get("category_ids");
         let reason = row.get("reason");
+        let synced = row.get("synced");
         let created_at = row.get("created_at");
         let updated_at = row.get("updated_at");
 
@@ -43,6 +44,7 @@ impl FromRow<'_, SqliteRow> for Package {
             link,
             categories,
             reason,
+            synced,
             created_at,
             updated_at,
         })
@@ -89,6 +91,7 @@ impl FromRow<'_, SqliteRow> for PackageCategory {
 
         let name = row.get("name");
         let parent_id = row.get("parent_id");
+        let synced = row.get("synced");
         let created_at = row.get("created_at");
         let updated_at = row.get("updated_at");
 
@@ -96,6 +99,7 @@ impl FromRow<'_, SqliteRow> for PackageCategory {
             id,
             name,
             parent_id,
+            synced,
             created_at,
             updated_at,
         })
@@ -114,6 +118,7 @@ impl FromRow<'_, SqliteRow> for PackageCategoryRelation {
 
         let package_id = row.get("package_id");
         let category_id = row.get("category_id");
+        let synced = row.get("synced");
         let created_at = row.get("created_at");
         let updated_at = row.get("updated_at");
 
@@ -121,6 +126,7 @@ impl FromRow<'_, SqliteRow> for PackageCategoryRelation {
             id,
             package_id,
             category_id,
+            synced,
             created_at,
             updated_at,
         })
