@@ -1,6 +1,10 @@
-use sqlx::{Row, Sqlite};
+use sqlx::{Row, Sqlite, SqliteConnection};
 
-use crate::{abi::get_valid_pagination, PackManager};
+use crate::{
+    abi::get_valid_pagination,
+    types::{DelKvPair, DelType},
+    PackManager,
+};
 
 use super::Pkg;
 
@@ -94,13 +98,63 @@ impl Pkg for PackManager<Sqlite> {
     }
 
     async fn delete_package(&self, id: i64) -> Result<(), PkgError> {
+        let mut tx = self.pool.begin().await?;
         sqlx::query!(
             r#"DELETE FROM packages
           WHERE id = $1"#,
             id
         )
-        .execute(&self.pool)
+        .execute(&mut *tx)
         .await?;
+
+        let relations: Vec<PackageCategoryRelation> = sqlx::query_as(
+            "SELECT id FROM package_category_relations
+          WHERE package_id = $1",
+        )
+        .bind(id)
+        .fetch_all(&mut *tx)
+        .await?;
+
+        let mut del_relations_kvs: Vec<DelKvPair> = relations
+            .iter()
+            .map(|v| DelKvPair {
+                r#type: DelType::Relation.into(),
+                del_id: v.id,
+            })
+            .collect();
+
+        del_relations_kvs.push(DelKvPair {
+            r#type: DelType::Package.into(),
+            del_id: id,
+        });
+
+        let _ = self.add_del_records(del_relations_kvs, &mut *tx).await?;
+
+        tx.commit().await?;
+
+        Ok(())
+    }
+
+    async fn add_del_records(
+        &self,
+        del_records: Vec<DelKvPair>,
+        ex: &mut SqliteConnection,
+    ) -> Result<(), PkgError> {
+        let mut query = "INSERT INTO del_records (type, del_id) VALUES ".to_string();
+
+        let values = del_records
+            .iter()
+            .map(|v| format!("({}, {})", v.r#type, v.del_id))
+            .collect::<Vec<String>>()
+            .join(", ");
+
+        query.push_str(values.as_str());
+
+        let res = sqlx::query(query.as_str()).execute(ex).await;
+
+        if let Err(e) = res {
+            return Err(PkgError::DbError(e));
+        }
 
         Ok(())
     }
@@ -309,6 +363,7 @@ impl Pkg for PackManager<Sqlite> {
     }
 
     async fn delete_category(&self, id: i64) -> Result<(), PkgError> {
+        let mut tx = self.pool.begin().await?;
         // check if has child category
         let has_child: i64 =
             sqlx::query("SELECT COUNT(*) FROM package_categories WHERE parent_id = $1")
@@ -338,8 +393,20 @@ impl Pkg for PackManager<Sqlite> {
           WHERE id = $1"#,
             id
         )
-        .execute(&self.pool)
+        .execute(&mut *tx)
         .await?;
+
+        let _ = self
+            .add_del_records(
+                vec![DelKvPair {
+                    r#type: DelType::Category.into(),
+                    del_id: id,
+                }],
+                &mut *tx,
+            )
+            .await?;
+
+        tx.commit().await?;
 
         Ok(())
     }

@@ -1,6 +1,8 @@
 mod manager;
 mod sync;
 
+use sqlx::SqliteConnection;
+
 use crate::{
     abi::{
         types::{
@@ -12,7 +14,7 @@ use crate::{
         },
         PkgError,
     },
-    types::{PackageCategory, PackageWithOutCategories},
+    types::{DelKvPair, PackageCategory, PackageWithOutCategories},
 };
 
 #[allow(async_fn_in_trait)]
@@ -64,6 +66,12 @@ pub trait Pkg {
         &self,
         id: i64,
     ) -> Result<Vec<PackageCategoryRelation>, PkgError>;
+
+    async fn add_del_records(
+        &self,
+        del_records: Vec<DelKvPair>,
+        ex: &mut SqliteConnection,
+    ) -> Result<(), PkgError>;
 }
 
 /// Database sync trait
@@ -75,10 +83,19 @@ pub trait DbSync<T: PkgSync> {
 #[allow(async_fn_in_trait)]
 pub trait PkgSync {
     /// Add a package to the database
-    async fn sync_packages(&self, data: Vec<PackageWithOutCategories>) -> Result<(), PkgError>;
-    async fn sync_package_categories(&self, data: Vec<PackageCategory>) -> Result<(), PkgError>;
+    async fn sync_packages(
+        &self,
+        data: Vec<PackageWithOutCategories>,
+        dels: Vec<i64>,
+    ) -> Result<(), PkgError>;
+    async fn sync_package_categories(
+        &self,
+        data: Vec<PackageCategory>,
+        dels: Vec<i64>,
+    ) -> Result<(), PkgError>;
     async fn sync_package_category_relations(
         &self,
         data: Vec<PackageCategoryRelation>,
+        dels: Vec<i64>,
     ) -> Result<(), PkgError>;
 }

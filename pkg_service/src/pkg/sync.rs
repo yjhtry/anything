@@ -2,55 +2,34 @@ use sqlx::{Postgres, Sqlite};
 
 use crate::{
     abi::PkgError,
-    types::{
-        PackageCategory, PackageCategoryRelation, PackageIdAndUpdatedAt, PackageWithOutCategories,
-        PkgCateRelIdAndUpdatedAt, PkgCategoryIdAndUpdatedAt,
-    },
+    types::{DelKvPair, PackageCategory, PackageCategoryRelation, PackageWithOutCategories},
     DbSync, PackManager,
 };
 
 use super::PkgSync;
 
 impl PkgSync for PackManager<Postgres> {
-    async fn sync_packages(&self, data: Vec<PackageWithOutCategories>) -> Result<(), PkgError> {
-        let remote_data: Vec<PackageIdAndUpdatedAt> =
-            sqlx::query_as("SELECT id, updated_at FROM packages")
-                .fetch_all(&self.pool)
-                .await?;
-
+    async fn sync_packages(
+        &self,
+        data: Vec<PackageWithOutCategories>,
+        dels: Vec<i64>,
+    ) -> Result<(), PkgError> {
         // compare local and remote data find out which need to be added, updated and deleted
         let mut add_data = vec![];
         let mut update_data = vec![];
-        let mut delete_data = vec![];
 
-        for d in &remote_data {
-            let local = data.iter().find(|v| v.id == d.id);
-
-            if local.is_none() {
-                delete_data.push(d.id);
+        for d in data.into_iter() {
+            match d.synced {
+                0 => add_data.push(d),
+                2 => update_data.push(d),
+                _ => {}
             }
         }
 
-        for d in data {
-            let remote = remote_data.iter().find(|v| v.id == d.id);
-
-            match remote {
-                Some(v) => {
-                    if v.updated_at != d.updated_at {
-                        update_data.push(d);
-                    }
-                }
-                None => {
-                    add_data.push(d);
-                }
-            }
-        }
-
-        if !delete_data.is_empty() {
+        if !dels.is_empty() {
             let query = format!(
                 "DELETE FROM packages WHERE id IN ({})",
-                delete_data
-                    .iter()
+                dels.iter()
                     .map(ToString::to_string)
                     .collect::<Vec<String>>()
                     .join(", ")
@@ -97,45 +76,27 @@ impl PkgSync for PackManager<Postgres> {
         Ok(())
     }
 
-    async fn sync_package_categories(&self, data: Vec<PackageCategory>) -> Result<(), PkgError> {
-        let remote_data: Vec<PkgCategoryIdAndUpdatedAt> =
-            sqlx::query_as("SELECT id, updated_at FROM package_categories")
-                .fetch_all(&self.pool)
-                .await?;
-
+    async fn sync_package_categories(
+        &self,
+        data: Vec<PackageCategory>,
+        dels: Vec<i64>,
+    ) -> Result<(), PkgError> {
         // compare local and remote data find out which need to be added, updated and deleted
         let mut add_data = vec![];
         let mut update_data = vec![];
-        let mut delete_data = vec![];
 
-        for d in &remote_data {
-            let local = data.iter().find(|v| v.id == d.id);
-
-            if local.is_none() {
-                delete_data.push(d.id);
+        for d in data.into_iter() {
+            match d.synced {
+                0 => add_data.push(d),
+                2 => update_data.push(d),
+                _ => {}
             }
         }
 
-        for d in data {
-            let remote = remote_data.iter().find(|v| v.id == d.id);
-
-            match remote {
-                Some(v) => {
-                    if v.updated_at != d.updated_at {
-                        update_data.push(d);
-                    }
-                }
-                None => {
-                    add_data.push(d);
-                }
-            }
-        }
-
-        if !delete_data.is_empty() {
+        if !dels.is_empty() {
             let query = format!(
                 "DELETE FROM package_categories WHERE id IN ({})",
-                delete_data
-                    .iter()
+                dels.iter()
                     .map(ToString::to_string)
                     .collect::<Vec<String>>()
                     .join(", ")
@@ -184,45 +145,24 @@ impl PkgSync for PackManager<Postgres> {
     async fn sync_package_category_relations(
         &self,
         data: Vec<PackageCategoryRelation>,
+        dels: Vec<i64>,
     ) -> Result<(), PkgError> {
-        let remote_data: Vec<PkgCateRelIdAndUpdatedAt> =
-            sqlx::query_as("SELECT * FROM package_category_relations")
-                .fetch_all(&self.pool)
-                .await?;
-
         // compare local and remote data find out which need to be added, updated and deleted
         let mut add_data = vec![];
         let mut update_data = vec![];
-        let mut delete_data = vec![];
 
-        for d in &remote_data {
-            let local = data.iter().find(|v| v.id == d.id);
-
-            if local.is_none() {
-                delete_data.push(d.id);
+        for d in data.into_iter() {
+            match d.synced {
+                0 => add_data.push(d),
+                2 => update_data.push(d),
+                _ => {}
             }
         }
 
-        for d in data {
-            let remote = remote_data.iter().find(|v| v.id == d.id);
-
-            match remote {
-                Some(v) => {
-                    if v.updated_at != d.updated_at {
-                        update_data.push(d);
-                    }
-                }
-                None => {
-                    add_data.push(d);
-                }
-            }
-        }
-
-        if !delete_data.is_empty() {
+        if !dels.is_empty() {
             let query = format!(
                 "DELETE FROM package_category_relations WHERE id IN ({})",
-                delete_data
-                    .iter()
+                dels.iter()
                     .map(ToString::to_string)
                     .collect::<Vec<String>>()
                     .join(", ")
@@ -272,27 +212,47 @@ impl PkgSync for PackManager<Postgres> {
 
 impl DbSync<PackManager<Postgres>> for PackManager<Sqlite> {
     async fn sync(&self, other_manager: PackManager<Postgres>) -> Result<(), PkgError> {
-        let local_packages = sqlx::query_as("SELECT * FROM packages where synced = 0")
+        let del_records: Vec<DelKvPair> = sqlx::query_as("SELECT * FROM del_records")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let mut del_packages = vec![];
+        let mut del_categories = vec![];
+        let mut del_relations = vec![];
+
+        for d in del_records {
+            match d.r#type {
+                1 => del_packages.push(d.del_id),
+                2 => del_relations.push(d.del_id),
+                3 => del_categories.push(d.del_id),
+                _ => {}
+            }
+        }
+
+        let local_packages = sqlx::query_as("SELECT * FROM packages where synced <> 0")
             .fetch_all(&self.pool)
             .await
             .unwrap();
 
-        let local_categories = sqlx::query_as("SELECT * FROM package_categories where synced = 0")
+        let local_categories = sqlx::query_as("SELECT * FROM package_categories where synced <> 0")
             .fetch_all(&self.pool)
             .await?;
 
         let local_relations =
-            sqlx::query_as("SELECT * FROM package_category_relations where synced = 0")
+            sqlx::query_as("SELECT * FROM package_category_relations where synced <> 0")
                 .fetch_all(&self.pool)
                 .await?;
 
-        other_manager.sync_packages(local_packages).await.unwrap();
+        other_manager
+            .sync_packages(local_packages, del_packages)
+            .await
+            .unwrap();
 
         other_manager
-            .sync_package_categories(local_categories)
+            .sync_package_categories(local_categories, del_categories)
             .await?;
         other_manager
-            .sync_package_category_relations(local_relations)
+            .sync_package_category_relations(local_relations, del_relations)
             .await?;
         Ok(())
     }

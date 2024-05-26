@@ -1,9 +1,11 @@
 mod category;
+mod del_record;
 mod package;
 mod relation;
 
 pub use category::*;
 use chrono::NaiveDateTime;
+pub use del_record::*;
 pub use package::*;
 pub use relation::*;
 
@@ -64,6 +66,7 @@ impl FromRow<'_, SqliteRow> for PackageWithOutCategories {
         let description = row.get("description");
         let link = row.get("link");
         let reason = row.get("reason");
+        let synced = row.get("synced");
         let created_at = row.get("created_at");
         let updated_at = row.get("updated_at");
 
@@ -73,6 +76,7 @@ impl FromRow<'_, SqliteRow> for PackageWithOutCategories {
             description,
             link,
             reason,
+            synced,
             created_at,
             updated_at,
         })
@@ -187,5 +191,14 @@ impl FromRow<'_, PgRow> for PkgCateRelIdAndUpdatedAt {
             id,
             updated_at: updated_at.to_string(),
         })
+    }
+}
+
+impl FromRow<'_, SqliteRow> for DelKvPair {
+    fn from_row(row: &SqliteRow) -> Result<Self, sqlx::Error> {
+        let r#type = row.get("type");
+        let del_id = row.get("del_id");
+
+        Ok(Self { r#type, del_id })
     }
 }

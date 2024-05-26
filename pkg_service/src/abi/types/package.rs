@@ -23,6 +23,7 @@ pub struct PackageWithOutCategories {
     pub description: String,
     pub link: String,
     pub reason: String,
+    pub synced: u8,
     pub created_at: String,
     pub updated_at: String,
 }
