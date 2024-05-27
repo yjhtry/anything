@@ -254,6 +254,12 @@ impl DbSync<PackManager<Postgres>> for PackManager<Sqlite> {
         other_manager
             .sync_package_category_relations(local_relations, del_relations)
             .await?;
+
+        // drop all del_records
+
+        sqlx::query("DELETE FROM del_records")
+            .execute(&self.pool)
+            .await?;
         Ok(())
     }
 }
